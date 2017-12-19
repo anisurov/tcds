@@ -4,18 +4,22 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: whitesmoke"> Dashboard </div>
+            <div class="panel panel-default inside-body-panel-shadow">
+                <div class="panel-heading"> Dashboard </div>
 
                 <div class="panel-body">
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
                         </div>
+                    @elseif (session('failed'))
+                        <div class="alert alert-danger">
+                            {{ session('status') }}
+                        </div>
                     @endif
 
                         <button type="button" class="btn btn-primary btn-lg" style="margin-left: 100px">
-                            <a href="t_reg"> <p style="color: white"> Teacher Registration </p> </a> </button>
+                            <a href="registration"> <p style="color: white"> Teacher Registration </p> </a> </button>
 
 
                         <button type="button" class="btn btn-primary btn-lg" style="margin-left: 50px">
