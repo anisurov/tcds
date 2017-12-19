@@ -12,10 +12,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
 </head>
-<body style="background-color:#9BA2AB">
+<body>
     <div id="app">
-        <nav class="navbar navbar-default navbar-static-top" style="background-color:#245269 ; color: white">
+        <nav class="navbar navbar-default navbar-static-top panel-head-color">
             <div class="container">
                 <div class="navbar-header">
 
@@ -76,7 +77,13 @@
 
         @yield('content')
     </div>
+    <div class="navbar navbar-default navbar-fixed-bottom" style="background-color:#245269;text-align: center; padding-top: 10px;color:white;">
 
+      <footer ><?php echo '&copy  IIUC   ' . date('Y'); ?></footer>
+
+    </div>
+
+  
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
