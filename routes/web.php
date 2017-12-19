@@ -11,18 +11,27 @@
 |
 */
 
+
 /*Route::get('/', function () {
     return view('auth/login');
 });*/
 
+
+/*
+Route::get('/', function () {
+    return view('layouts.app');
+});
+*/
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 Route::get('/', 'HomeController@index');
 
-Route::get('/t_reg', function (){
-    return view('t_reg');
-});
+Route::get('/profile', 'profileController@index');
+
+
+Route::get('/registration','registrationController@index');
+Route::post('/registration','registrationController@teacherRegs');
 
 Route::get('/course_reg', function (){
     return view('course_reg');
