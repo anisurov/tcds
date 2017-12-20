@@ -32,7 +32,7 @@
           <div class="form-group" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('joingDate','Joining Date',['class'=>'input-group-addon']) !!}
-            {!! Form::text('joingDate','',['class'=>'form-control', 'required'=>'required']) !!}
+            {!! Form::date('joingDate','',['class'=>'form-control', 'required'=>'required'], \Carbon\Carbon::now()) !!}
              </div>
           </div>
           <div class="form-group" style="margin-right:2px;margin-left:2px;">

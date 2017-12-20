@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/Laravel_Projects/TeacherCourseDist'),
+    'url' => env('APP_URL', 'http://localhost/Laravel_Projects/TeacherCourseDist/public'),
 
     /*
     |--------------------------------------------------------------------------
