@@ -36,7 +36,7 @@ class registrationController extends Controller
                          // $destinationPath=public_path('images\notice');
                           $file     = request()->file('image');
                           $fileName = 'tcds_img_'.date('_j\_m_Y_').rand(1,15).'_'. $file->getClientOriginalName();
-                          Storage::put($fileName,$file);
+                         Storage::disk('public')->put($fileName,file_get_contents($file),'public');
               }else{
               $fileName='';
               }
