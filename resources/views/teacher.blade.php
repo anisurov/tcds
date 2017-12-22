@@ -7,9 +7,12 @@
             <div class="panel panel-default inside-body-panel-shadow">
                 <div class="panel-heading">
                   @foreach($teacher as $data)
-                      {{$data->t_name}}
-                      <img src="{{Storage::url($data->t_image)}}"
-                         alt="" style="max-width: 130px;" width="130" height="100" border="0">
+                    <div class="pull-right image col-md-6">
+                      <img class="img-circle" src="{{Storage::url($data->t_image)}}"
+                         alt="{{$data->t_name}}">
+                     </div>
+                      {{$data->t_name}}<br>
+                      {{$data->t_designation}}<br>
                   @endforeach 
                 </div>
                 <div class="panel-body">

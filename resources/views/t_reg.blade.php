@@ -47,17 +47,24 @@
             {!! Form::file('image',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
           </div>
-          <div class="form-group" style="margin-right:2px;margin-left:2px;">
+          <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}" 
+		style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('password','Password',['class'=>'input-group-addon']) !!} 
             {!! Form::password('password',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
           </div>
-          <div class="form-group" style="margin-right:2px;margin-left:2px;">
+          <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}" 
+		style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('password_confirmation','Confirm Password',['class'=>'input-group-addon']) !!}
             {!! Form::password('password_confirmation',['class'=>'form-control', 'required'=>'required']) !!}
-            </div>
+	   </div>
+		@if ($errors->has('email'))
+                 <span class="alert-danger">
+                      <strong>{{ $errors->first('password_confirmation') }}</strong>
+                 </span>
+               @endif 
           </div>
 
             {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
