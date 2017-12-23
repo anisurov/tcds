@@ -40,3 +40,11 @@ Route::get('/course_reg', function (){
 Route::get('/teacher', function (){
     return view('teacher');
 });
+
+
+
+/*Routes, Handles Error exceptions [START]*/
+Route::get('404',['as'=>'404','uses'=>'ErrorHandlerController@errorCode404']);
+
+Route::get('405',['as'=>'405','uses'=>'ErrorHandlerController@errorCode405']);
+/*Routes, Handles Error exceptions [END]*/
