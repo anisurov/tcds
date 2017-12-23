@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Teacher;
 
 class profileController extends Controller
 {
@@ -12,14 +13,16 @@ class profileController extends Controller
   }
 
   public function index(){
-    $email = Auth::user()->email;
     $check= Auth::user()->check;
-    echo "AAA".$check."<br>";
+   // echo "AAA".$check."<br>";
     if($check==0){
       return view('admin');
     }
     if($check==1){
-    echo 'teacher';
+      $email = Auth::user()->email;
+      $teacher = Teacher::where('t_email',$email)->get();
+//      var_dump($teacher);
+      return view('teacher',compact('teacher'));
     }
   }
 }

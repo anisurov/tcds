@@ -53,6 +53,13 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
+                              @if(Auth::user()->check==1)
+                                    <li>
+                                       <a href="/settings">           
+                                         Settings
+                                        </a>      
+                                    </li>
+                              @endif
                                     <li>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
