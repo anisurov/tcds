@@ -8,16 +8,6 @@
                 <div class="panel-heading"> Dashboard </div>
 
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @elseif (session('failed'))
-                        <div class="alert alert-danger">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
                         <button type="button" class="btn btn-primary btn-lg" style="margin-left: 100px">
                             <a href="registration"> <p style="color: white"> Teacher Registration </p> </a> </button>
 

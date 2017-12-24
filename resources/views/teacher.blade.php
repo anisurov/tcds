@@ -7,7 +7,7 @@
             <div class="panel panel-default inside-body-panel-shadow">
                 <div class="panel-heading">
                   @foreach($teacher as $data)
-                    <div class="pull-right image col-md-6">
+                    <div class="pull-right image">
                       <img class="img-circle" src="{{Storage::url($data->t_image)}}"
                          alt="{{$data->t_name}}">
                      </div>
@@ -16,12 +16,6 @@
                   @endforeach 
                 </div>
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
                 Select Course
 
                 </div>

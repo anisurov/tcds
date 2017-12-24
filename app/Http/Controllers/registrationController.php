@@ -19,14 +19,18 @@ class registrationController extends Controller
 
 
     public function index(){
-      $this->verifyPermission(Auth::user()->check);
+      if($this->verifyPermission(Auth::user()->check)==false){
+		Session::flash('failed','You are not permitted to view this page');
+		return redirect('/profile');
+	}else
       return view('t_reg');
     }
 
  protected  function verifyPermission($checker){
       if($checker!=0){
-        redirect('/');
+       return false;
       }
+	return true;
    }
     
     public function teacherRegs(Request $request){
@@ -42,7 +46,7 @@ class registrationController extends Controller
               }
       if($this->create($request->all(),$fileName)){
         $this->notifyThroughmail($request->t_email,$request->password);
-       Session::flash('status', "Registration was successful!!");
+       Session::flash('success', "Registration was successful!!");
         return redirect('profile');
       }else{
        Session::flash('failed', "Registration was failed!!");
@@ -53,8 +57,8 @@ class registrationController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            't_name' => 'required|string|max:255',
+            't_email' => 'required|string|email|max:255|unique:teachers',
             'password' => 'required|string|min:6|same:password',
             'password_confirmation' => 'required|string|min:6|same:password',
             'joingDate'=> 'required|date',

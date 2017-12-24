@@ -16,11 +16,16 @@
                {!! Form::text('t_name','',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
           </div>
-          <div class="form-group" style="margin-right:2px;margin-left:2px;">
+          <div class="form-group{{ $errors->has('t_email') ? ' has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('t_email','Email',['class'=>'input-group-addon']) !!}
             {!! Form::email('t_email','',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
+		@if ($errors->has('t_email'))
+                 <span class="alert-danger">
+                      <strong>{{ $errors->first('t_email') }}</strong>
+                 </span>
+               @endif 
           </div>
 
           <div class="form-group" style="margin-right:2px;margin-left:2px;">
@@ -29,11 +34,16 @@
             {!! Form::text('t_designation','',['class'=>'form-control', 'required'=>'required']) !!}
              </div>
           </div>
-          <div class="form-group" style="margin-right:2px;margin-left:2px;">
+          <div class="form-group{{ $errors->has('t_email') ? ' has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('joingDate','Joining Date',['class'=>'input-group-addon']) !!}
             {!! Form::date('joingDate','',['class'=>'form-control', 'required'=>'required'], \Carbon\Carbon::now()) !!}
              </div>
+		@if ($errors->has('joingDate'))
+                 <span class="alert-danger">
+                      <strong>{{ $errors->first('joingDate') }}</strong>
+                 </span>
+               @endif 
           </div>
           <div class="form-group" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
@@ -60,9 +70,13 @@
             {!! Form::label('password_confirmation','Confirm Password',['class'=>'input-group-addon']) !!}
             {!! Form::password('password_confirmation',['class'=>'form-control', 'required'=>'required']) !!}
 	   </div>
-		@if ($errors->has('email'))
+		@if ($errors->has('password_confirmation'))
                  <span class="alert-danger">
                       <strong>{{ $errors->first('password_confirmation') }}</strong>
+                 </span>
+		@elseif($errors->has('password'))
+		<span class="alert-danger">
+                      <strong>{{ $errors->first('password') }}</strong>
                  </span>
                @endif 
           </div>

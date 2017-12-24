@@ -55,7 +55,7 @@
                                 <ul class="dropdown-menu">
                               @if(Auth::user()->check==1)
                                     <li>
-                                       <a href="/settings">           
+                                       <a href="{{route('setting')}}">           
                                          Settings
                                         </a>      
                                     </li>
@@ -78,7 +78,24 @@
                 </div>
             </div>
         </nav>
-
+ 		   @if (session('success'))
+		    <div class="row">
+       		      <div class="col-md-8 col-md-offset-2">
+    			<div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+		       </div>
+		     </div>
+                    @elseif (session('failed'))
+                        <div class="row">
+       		      <div class="col-md-8 col-md-offset-2">
+    			<div class="alert alert-danger">
+                            {{ session('failed') }}
+                        </div>
+		       </div>
+		     </div>
+                    @endif
+		
         @yield('content')
     </div>
     <div class="navbar navbar-default navbar-fixed-bottom" style="background-color:#245269;text-align: center; padding-top: 10px;color:white;">
