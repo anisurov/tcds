@@ -54,5 +54,5 @@ Route::get('405',['as'=>'405','uses'=>'ErrorHandlerController@errorCode405']);
 Route::get('/setting',['as'=>'setting','uses'=>'SettingController@index']);
 Route::get('/edit/{id}',['as'=>'updateProfile','uses'=>'SettingController@showProfileEditForm']);
 Route::post('/update',['as'=>'update','uses'=>'SettingController@updateProfile']);
-Route::post('/update',['as'=>'changepass','uses'=>'SettingController@changePassword']);
+Route::post('/change/password',['as'=>'changepass','uses'=>'SettingController@changePassword']);
 /*profile Setting[end]*/
