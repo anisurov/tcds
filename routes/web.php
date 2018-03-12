@@ -25,18 +25,18 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
-Route::get('/', 'HomeController@index');
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/profile', 'profileController@index');
+Route::get('/profile', 'profileController@index')->name('profile');
 
 
 Route::get('/registration','registrationController@index');
 Route::post('/registration','registrationController@teacherRegs');
 
-Route::get('/course_reg', function (){
+/*Route::get('/course_reg', function (){
     return view('course_reg');
 });
-
+*/
 Route::get('/teacher', function (){
     return view('teacher');
 });
@@ -56,3 +56,22 @@ Route::get('/edit/{id}',['as'=>'updateProfile','uses'=>'SettingController@showPr
 Route::post('/update',['as'=>'update','uses'=>'SettingController@updateProfile']);
 Route::post('/change/password',['as'=>'changepass','uses'=>'SettingController@changePassword']);
 /*profile Setting[end]*/
+
+
+/***********************************[  Admin Area  ]********************************/
+
+Route::group(['middleware' => ['auth', 'admin']], function()
+{
+
+/************************[Course]***********************************/
+Route::get('/course/all','CourseController@index')->name('allcourse');
+Route::view('/course/add','admin.course.add')->name('addcourseform');
+Route::post('/course/add','CourseController@add')->name('addcourse');
+Route::get('/course/edit','CourseController@edit')->name('editcourseform');
+Route::post('/course/update','CourseController@update')->name('updatecourse');
+/************************[end of Course]****************************/
+
+});
+
+
+/***********************************[ end of Admin Area  ]********************************/

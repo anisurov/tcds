@@ -1,0 +1,16 @@
+Add Course
+-----------------
+----------------
+
+Basics--
+----------------
+1. Course code
+2. Course Name
+3. Credit
+4. Contact Hrs
+5. Course Type--> select option [core, interdicipline, univ requirment]
+
+Optional
+--------------
+Season
+Semester

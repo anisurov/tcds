@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
-    <div class="row">
-        <div class="col-md-8 col-md-offset-3">
+ <div class="col-md-8 col-md-offset-3">
            <div class="panel panel-default inside-body-panel-shadow">
             <div class="panel-heading">Teacher Registration </div>
             <div class="panel-body">
@@ -87,6 +85,4 @@
           </div>
       </div>
     </div>
-</div>
-
 @endsection

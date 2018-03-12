@@ -23,8 +23,8 @@ class SettingController extends Controller
 
     public function index(){
       if($this->verifyPermission(Auth::user()->check)==false){
-		Session::flash('failed','You are not permitted to view this page');
-		return redirect('/profile');
+		//Session::flash('failed','You are not permitted to view this page');
+		return redirect('/profile')->withFailed('You are not permitted to view this page');
 	}else
            $teacher = $this->setData();
       	   return view('setting',compact('teacher'));
@@ -100,7 +100,7 @@ public function changePassword(Request $request)
     'current_password' => 'required',
     'password' => 'required|same:password',
     'password_confirmation' => 'required|same:password',     
-  ], $messages);
+  ], $messages)->validate();
 
   return $validator;
 }  
