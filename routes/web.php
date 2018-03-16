@@ -71,6 +71,23 @@ Route::get('/course/edit','CourseController@edit')->name('editcourseform');
 Route::post('/course/update','CourseController@update')->name('updatecourse');
 /************************[end of Course]****************************/
 
+
+/************************[Semester]***********************************/
+Route::get('/semester/all','SemesterController@index')->name('allsemester');
+Route::post('/semester/active','SemesterController@toggleStatus')->name('activesemester');
+Route::post('/semester/delete','SemesterController@delete')->name('deletesemester');
+Route::view('/semester/add','admin.semester.add')->name('addsemesterform');
+Route::post('/semester/add','SemesterController@add')->name('addsemester');
+Route::get('/semester/edit','SemesterController@edit')->name('editsemesterform');
+Route::get('/semester/addcourse','SemesterController@addCourseForm')->name('addcourseTosemesterForm');
+Route::post('/semester/addcourse','SemesterController@addCourse')->name('addcourseTosemester');
+/************************[end of Semester]****************************/
+
+
+/************************[Course Distribution]***********************************/
+Route::get('/distribution/notify','DistributionController@notifyForm')->name('notifyForm');
+Route::get('/distribution/approve','DistributionController@approve')->name('requestapprove');
+/************************[end of Course Distribution]****************************/
 });
 
 

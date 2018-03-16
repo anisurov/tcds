@@ -14,7 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
 </head>
-<body> 
+<body>
 <div id="app">
         <nav class="navbar navbar-default navbar-static-top panel-head-color">
             <div class="container">
@@ -36,10 +36,10 @@
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-left">                        
+                    <ul class="nav navbar-nav navbar-left">
                     @auth
                       @if(Auth::user()->check==0)
-                  			@include('layouts.navbar')	
+                  			@include('layouts.navbar')
                         @endif
                      @else
                      &nbsp;
@@ -61,9 +61,9 @@
                                 <ul class="dropdown-menu">
                               @if(Auth::user()->check==1)
                                     <li>
-                                       <a href="{{route('setting')}}">           
+                                       <a href="{{route('setting')}}">
                                          Settings
-                                        </a>      
+                                        </a>
                                     </li>
                               @endif
                                     <li>
@@ -86,31 +86,31 @@
         </nav>
  		   @if (session('success'))
 		    <div class="row">
-       		      <div class="col-md-8 col-md-offset-2 alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-    			<div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-		       </div>
-		     </div>
-                    @elseif (session('failed'))
-                        <div class="row">
        		      <div class="col-md-8 col-md-offset-2">
-    			<div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                  <div class="alert alert-success alert-dismissable">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                                        {{ session('success') }}
+            		  </div>
+		           </div>
+        </div>
+      @elseif (session('failed'))
+          <div class="row">
+       		      <div class="col-md-8 col-md-offset-2">
+    			          <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                             {{ session('failed') }}
-                        </div>
+                  </div>
+		            </div>
 		       </div>
-		     </div>
                     @endif
 				  @yield('content')
-      
+
      <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:#245269;text-align: center; padding-top: 10px;color:white;">
 		<footer ><?php echo '&copy  IIUC   ' . date('Y'); ?></footer>
     </nav>
     </div>
 
-  
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

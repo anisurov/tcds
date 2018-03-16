@@ -32,7 +32,7 @@ class registrationController extends Controller
       }
 	return true;
    }
-    
+
     public function teacherRegs(Request $request){
       $this->validator($request->all());
 
@@ -58,6 +58,7 @@ class registrationController extends Controller
     {
         return Validator::make($data, [
             't_name' => 'required|string|max:255',
+            't_designation' => 'required|string|max:255',
             't_email' => 'required|string|email|max:255|unique:teachers',
             'password' => 'required|string|min:6|same:password',
             'password_confirmation' => 'required|string|min:6|same:password',
@@ -73,9 +74,9 @@ class registrationController extends Controller
      * @return \App\User
      */
     protected function create(array $data,$image)
-    {	
-		 
-		
+    {
+
+
 		$resTeacherCR=Teacher::create([
 		't_name'=>$data['t_name'],
 		't_email'=>$data['t_email'],
@@ -83,7 +84,7 @@ class registrationController extends Controller
 		't_designation'=>$data['t_designation'],
     'joining_date'=>date("Y-m-d", strtotime($data['joingDate'])),
     ]);
-    
+
     $resUserCR=User::create([
             'name' => $data['t_name'],
             'email' => $data['t_email'],
@@ -107,7 +108,7 @@ class registrationController extends Controller
        // $attach = $request->file('file');
 	/*
 	['introLines'=>$introLines,'actionText'=>$actionText,
-          'level'=>'success','actionUrl'=>$actionUrl] 	
+          'level'=>'success','actionUrl'=>$actionUrl]
 	*/
         Mail::send('emails.send',['title'=>$title,'content'=>$content],function ($message) use ($username)
         {
