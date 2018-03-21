@@ -12,7 +12,7 @@ background-color:#9BA2AB;
 	margin-bottom: 80px;
 }
 .panel-head-color{
-  background-color:#245269 ; 
+  background-color:#245269 ;
   color: white;
 }
 .info-container-main{
@@ -20,12 +20,17 @@ background-color:#9BA2AB;
 }
 
 .panel-default > .panel-heading{
-  background-color:#245269 ; 
+  background-color:#245269 ;
   color: white;
   border-bottom-color:indianred;
   border-bottom-width:4px;
 }
-
+.panel-default > .panel-footer{
+  background-color:#245269 ;
+  color: white;
+  border-bottom-color:indianred;
+  border-bottom-width:4px;
+}
 
 .inside-body-panel-shadow{
     -webkit-box-shadow: 10px 10px 75px 3px rgba(255,255,255,1);
@@ -33,7 +38,7 @@ background-color:#9BA2AB;
     box-shadow: 10px 10px 75px 3px rgba(255,255,255,1);
     border-bottom-width: 4px;
     border-bottom-color: #245269;
-      
+
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
 	color: #f3dcf2;

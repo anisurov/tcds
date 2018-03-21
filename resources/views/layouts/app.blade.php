@@ -40,7 +40,28 @@
                     @auth
                       @if(Auth::user()->check==0)
                   			@include('layouts.navbar')
-                        @endif
+                      @else
+
+                      <li class="dropdown {{Request::is('#') ? "active" : "" }}">
+                                                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
+                                                       Notification
+                                                   </a>
+                                                   <ul class="dropdown-menu">
+                                                     @php($notifications=App\Notify::where('end_date','>',date("Y-m-d"))->get())
+                                                     @if($notifications->count()>0)
+                                                    @foreach($notifications as $notification)
+                                                       <li>
+                                                          <a href="{{route('teacherAddcourseForm')}}/?semester_id={{$notification->semester_id}}">
+                                                            please add course to <b>{{App\Semester::where('semester_id',$notification->semester_id)->pluck('semesterName')->first()}}</b> within {{$notification->end_date}}
+                                                          </a>
+                                                       </li>
+                                                    @endforeach
+                                                    @else
+                                                    You have nothing to show
+                                                    @endif
+                                               </ul>
+                      </li>
+                      @endif
                      @else
                      &nbsp;
                     @endauth
@@ -85,23 +106,19 @@
             </div>
         </nav>
  		   @if (session('success'))
-		    <div class="row">
        		      <div class="col-md-8 col-md-offset-2">
                   <div class="alert alert-success alert-dismissable">
                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                                         {{ session('success') }}
             		  </div>
 		           </div>
-        </div>
       @elseif (session('failed'))
-          <div class="row">
        		      <div class="col-md-8 col-md-offset-2">
     			          <div class="alert alert-danger alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                             {{ session('failed') }}
                   </div>
 		            </div>
-		       </div>
                     @endif
 				  @yield('content')
 

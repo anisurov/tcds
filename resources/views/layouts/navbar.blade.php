@@ -51,7 +51,7 @@
                                     </a>
                                  </li>
 			    <li>
-                                    <a href="{{route('requestapprove')}}">
+                                    <a href="{{route('active')}}">
                                       Approve  Course Request
                                      </a>
                                  </li>

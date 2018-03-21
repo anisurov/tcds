@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Teacher;
+use App\Semester;
 
 class profileController extends Controller
 {
@@ -21,8 +22,8 @@ class profileController extends Controller
     if($check==1){
       $email = Auth::user()->email;
       $teacher = Teacher::where('t_email',$email)->get();
-//      var_dump($teacher);
-      return view('teacher',compact('teacher'));
+      $semester = Semester::where('semesterStatus',1)->get();
+      return view('teacher',compact('teacher','semester'));
     }
   }
 }

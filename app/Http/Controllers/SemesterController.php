@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Semester;
 use App\CourseToSemester;
+use DB;
 
 class SemesterController extends Controller
 {
@@ -121,6 +122,18 @@ class SemesterController extends Controller
 		}
 		else{
 			return redirect(route('profile'))->withFailed('operation Failed!!');
+		}
+	}
+
+	public function alloted(Request $request)
+	{
+		$semester = $request->semester_id;
+		if (Semester::where('semester_id',$semester)->pluck('semesterStatus')->first()==1) {
+
+				$requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_alloted_to_teacher.section as section','course_alloted_to_teacher.t_id as teacher_id')->join('course_alloted_to_teacher', 'course.course_id', '=', 'course_alloted_to_teacher.course_id')->where('course_alloted_to_teacher.semester_id', $semester)->get();
+				return view('admin.course.alloted',compact('requestd_course','semester'));
+		}	else {
+			return redirect(route('profile'))->withFailed('This semester is not active');
 		}
 	}
 

@@ -58,6 +58,17 @@ Route::post('/change/password',['as'=>'changepass','uses'=>'SettingController@ch
 /*profile Setting[end]*/
 
 
+/**********************************[ User area ]********************************************/
+Route::group(['middleware' => ['auth']], function()
+{
+Route::get('teacher/course/add','CourseRequestController@addform')->name('teacherAddcourseForm');
+Route::post('teacher/course/add','CourseRequestController@add')->name('teacherAddcourse');
+
+
+});
+/**********************************[End User area ]****************************************/
+
+
 /***********************************[  Admin Area  ]********************************/
 
 Route::group(['middleware' => ['auth', 'admin']], function()
@@ -81,12 +92,15 @@ Route::post('/semester/add','SemesterController@add')->name('addsemester');
 Route::get('/semester/edit','SemesterController@edit')->name('editsemesterform');
 Route::get('/semester/addcourse','SemesterController@addCourseForm')->name('addcourseTosemesterForm');
 Route::post('/semester/addcourse','SemesterController@addCourse')->name('addcourseTosemester');
+Route::get('/semester/course/alloted','SemesterController@alloted')->name('allotedCourse');
 /************************[end of Semester]****************************/
 
 
 /************************[Course Distribution]***********************************/
 Route::get('/distribution/notify','DistributionController@notifyForm')->name('notifyForm');
+Route::post('/distribution/notify','DistributionController@notify')->name('notify');
 Route::get('/distribution/approve','DistributionController@approve')->name('requestapprove');
+Route::get('/distribution/active','DistributionController@active')->name('active');
 /************************[end of Course Distribution]****************************/
 });
 

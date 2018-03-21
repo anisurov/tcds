@@ -6,15 +6,20 @@
 @php($semesterName=$semester->semesterName)
 @endforeach
 <?php
+$t_id =App\Teacher::where('t_email', Auth::user()->email)->pluck('t_id')->first();
+$requestd = DB::table('course')
+          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->where('status', 1)->get();
+
 $courseList = DB::table('course')
-          ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.contactHrs as hrs')
-          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where('course_in_current_semester.semester_id',$id)->get();
+          ->select('course.course_id as course_id', 'course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs')
+          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where('course_in_current_semester.semester_id', $id)->get();
  ?>
 <div class="col-md-6">
           <div class="panel panel-default inside-body-panel-shadow">
-           <div class="panel-heading"> Course in  {{$semesterName}}</div>
+           <div class="panel-heading"> Your requested course in  {{$semesterName}}</div>
            <div class="panel-body">
-             @if($courseList->count()>0)
+             @php($totalCredit=0)
+             @if($requestd->count()>0)
              <table class="table">
                <thead>
                    <tr>
@@ -22,18 +27,20 @@ $courseList = DB::table('course')
                        <th>Name</th>
                        <th>Credit</th>
                        <th>Contact Hour</th>
+                       <th>Section</th>
                    </tr>
                </thead>
 
                <tbody>
-                   @foreach($courseList as $value)
+                   @foreach($requestd as $value)
                    <tr>
                        <td>{{$value->id}}</td>
                        <td>{{$value->courseName}}</td>
                         <td>{{$value->credit}}</td>
                         <td>{{$value->hrs}}</td>
+                        <td>{{$value->section}}</td>
                    </tr>
-
+                    @php($totalCredit=$totalCredit+$value->credit)
                    @endforeach
 
                </tbody>
@@ -42,15 +49,17 @@ $courseList = DB::table('course')
            No course added yet!!
            @endif
            </div>
+          @if((15-$totalCredit)>0) <div class="panel-footer"> you need to take <b>{{15-$totalCredit}}</b> more credit</div>@endif
      </div>
    </div>
  <div class="col-md-6">
            <div class="panel panel-default inside-body-panel-shadow">
             <div class="panel-heading"> Add Course to {{$semesterName}} </div>
             <div class="panel-body">
-            	<form  method="POST" action="{{route('addcourseTosemester')}}">
+            	<form  method="POST" action="{{route('teacherAddcourse')}}">
                         {{ csrf_field() }}
                         <input type="hidden" name="semester_id" value="{{$id}}">
+                        <input type="hidden" name="teacher_id" value="{{$t_id}}">
                         <div class="form-group col-md-12 ">
                             <div class="input-group {{ $errors->has('course_name') ? ' has-error' : '' }}">
                             	  <div class="input-group-addon">
@@ -58,8 +67,7 @@ $courseList = DB::table('course')
 					  					  </div>
                                 <select id="course_name"  class="form-control"  name="course_name" required autofocus>
                                   <option>--select course--</option>
-                                  @php($courses=DB::select('SELECT * FROM course WHERE course_id not in (SELECT course_id FROM course_in_current_semester)'))
-                                  @foreach($courses as $course)
+                                  @foreach($courseList as $course)
                                   <option value="{{$course->course_id}}">{{$course->courseName}}</option>
                                   @endforeach
                                 </select>
@@ -67,6 +75,30 @@ $courseList = DB::table('course')
                                 @if ($errors->has('course_name'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('course_name') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
+                        <div class="form-group col-md-12 ">
+                            <div class="input-group {{ $errors->has('course_name') ? ' has-error' : '' }}">
+                            	  <div class="input-group-addon">
+											Section Name*
+					  					  </div>
+                                <select id="section"  class="form-control"  name="section" required autofocus>
+                                  <option>--select section--</option>
+
+                                  <option value="MA">MA</option>
+                                  <option value="MB">MB</option>
+                                  <option value="MC">MC</option>
+                                  <option value="FA">FA</option>
+                                  <option value="FB">FB</option>
+                                  <option value="FC">FC</option>
+
+                                </select>
+                            </div>
+                                @if ($errors->has('section'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('section') }}</strong>
                                     </span>
                                 @endif
                         </div>
