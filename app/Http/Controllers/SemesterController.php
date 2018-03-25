@@ -141,9 +141,9 @@ class SemesterController extends Controller
 	{
 
 				if ($task=='add') {
-					 $semesterName = 'required|regex:/[A-Z]-(\d{4})$/|max:20|unique:semester,semesterName';
+					 $semesterName = 'required|max:20|unique:semester,semesterName';
 				}else{
-					$semesterName = 'required|regex:/[A-Z]-(\d{4})$/|max:20';
+					$semesterName = 'required|max:20';
 				}
 	    return Validator::make($data, [
 					'semester_name' => $semesterName,

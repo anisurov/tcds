@@ -40,6 +40,21 @@
                         </div>
 
                         <div class="form-group col-md-12 ">
+                            <div class="input-group {{ $errors->has('term') ? ' has-error' : '' }}">
+                            	  <div class="input-group-addon">
+											 Semester*
+					  					  </div>
+                                <input id="term " type="text" class="form-control"  name="term" value="{{$course->semester}}" placeholder="Enter semester no." required autofocus>
+                            </div>
+                                @if ($errors->has('term'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('term') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
+
+                        <div class="form-group col-md-12 ">
                             <div class="input-group {{ $errors->has('course_credit') ? ' has-error' : '' }}">
                             	  <div class="input-group-addon">
 											 Credit*

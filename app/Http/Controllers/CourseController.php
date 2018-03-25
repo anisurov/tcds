@@ -24,6 +24,7 @@ class CourseController extends Controller
 		$this->validator($request->all(),'add');
 		$course=new Course();
 		$course->courseName=$request->course_name;
+		$course->semester=$request->term;
 		$course->courseCredit=$request->course_credit;
 		$course->courseIdentity=$request->course_code;
 		$course->courseType=$request->course_type;
@@ -40,6 +41,7 @@ class CourseController extends Controller
 
 		$courseName=$request->course_name;
 		$courseCredit=$request->course_credit;
+		$course->semester=$request->term;
 		$courseIdentity=$request->course_code;
 		$courseType=$request->course_type;
 		$contactHrs=$request->course_contact_hour;
@@ -63,6 +65,7 @@ class CourseController extends Controller
 					'course_code' => $course_code,
 	        'course_name' => 'required|string|max:500',
 	        'course_credit' => 'required|numeric',
+	        'term' => 'required|numeric',
 	        'course_contact_hour' => 'required|numeric',
 	        'course_type' =>  array('required','regex:/core|indp|urem$/'),
 	    ])->validate();
