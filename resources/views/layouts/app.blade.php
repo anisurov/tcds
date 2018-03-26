@@ -52,7 +52,7 @@
                                                     @foreach($notifications as $notification)
                                                        <li>
                                                           <a href="{{route('teacherAddcourseForm')}}/?semester_id={{$notification->semester_id}}">
-                                                            please add course to <b>{{App\Semester::where('semester_id',$notification->semester_id)->pluck('semesterName')->first()}}</b> within {{$notification->end_date}}
+                                                            please add course to <b>{{App\Semester::where('semester_id',$notification->semester_id)->where('semesterStatus','!=','13')->where('semesterStatus','!=','0')->pluck('semesterName')->first()}}</b> within {{$notification->end_date}}
                                                           </a>
                                                        </li>
                                                     @endforeach

@@ -6,7 +6,18 @@
 @php($semesterName=$semester->semesterName)
 @endforeach
 <?php
-$t_id =App\Teacher::where('t_email', Auth::user()->email)->pluck('t_id')->first();
+$teacher_infos =App\Teacher::where('t_email', Auth::user()->email)->get();
+foreach ($teacher_infos as $value) {
+    $t_id=$value->t_id;
+    $designation=$value->t_designation;
+}
+if ($designation=='Assistant Professor') {
+    $can_take=15;
+} elseif ($designation=='Associate Professor') {
+    $can_take=12;
+} elseif ($designation=='Lecturer') {
+    $can_take=12;
+}
 $requestd = DB::table('course')
           ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->where('status', 1)->get();
 
@@ -49,7 +60,7 @@ $courseList = DB::table('course')
            No course added yet!!
            @endif
            </div>
-          @if((15-$totalCredit)>0) <div class="panel-footer"> you need to take <b>{{15-$totalCredit}}</b> more credit</div>@endif
+          @if(($can_take-$totalCredit)>0) <div class="panel-footer"> you need to take <b>{{$can_take-$totalCredit}}</b> more credit</div>@endif
      </div>
    </div>
  <div class="col-md-6">
