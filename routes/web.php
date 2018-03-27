@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth']], function()
 Route::get('teacher/course/add','CourseRequestController@addform')->name('teacherAddcourseForm');
 Route::post('teacher/course/add','CourseRequestController@add')->name('teacherAddcourse');
 
-
+Route::view('teacher/semester/active','teacher.semester.active')->name('teacherActiveSemester');
 });
 /**********************************[End User area ]****************************************/
 
@@ -89,7 +89,8 @@ Route::post('/semester/active','SemesterController@toggleStatus')->name('actives
 Route::post('/semester/delete','SemesterController@delete')->name('deletesemester');
 Route::view('/semester/add','admin.semester.add')->name('addsemesterform');
 Route::post('/semester/add','SemesterController@add')->name('addsemester');
-Route::get('/semester/edit','SemesterController@edit')->name('editsemesterform');
+Route::post('/semester/edit','SemesterController@edit')->name('editsemesterform');
+Route::post('/semester/update','SemesterController@update')->name('updatesemester');
 Route::get('/semester/addcourse','SemesterController@addCourseForm')->name('addcourseTosemesterForm');
 Route::post('/semester/addcourse','SemesterController@addCourse')->name('addcourseTosemester');
 Route::get('/semester/course/alloted','SemesterController@alloted')->name('allotedCourse');
@@ -100,6 +101,7 @@ Route::get('/semester/course/alloted','SemesterController@alloted')->name('allot
 Route::get('/distribution/notify','DistributionController@notifyForm')->name('notifyForm');
 Route::post('/distribution/notify','DistributionController@notify')->name('notify');
 Route::get('/distribution/approve','DistributionController@approve')->name('requestapprove');
+Route::post('/distribution/indvidual','DistributionController@indvidual_approve')->name('indvidual_approve');
 Route::get('/distribution/active','DistributionController@active')->name('active');
 /************************[end of Course Distribution]****************************/
 });

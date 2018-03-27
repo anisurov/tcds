@@ -28,6 +28,8 @@ class SemesterController extends Controller
 		$semester->semesterName =$request->semester_name;
 		$semester->startingDate=$request->startDate;
 		$semester->endingDate=$request->endDate;
+		$semester->section_female=$request->section_female;
+		$semester->section_male=$request->section_male;
 		$semester->semesterStatus=1;
 		if($semester->save()){
 			return redirect(route('profile'))->withSuccess('Semester Added Successfully');
@@ -43,16 +45,17 @@ class SemesterController extends Controller
 	public function update(Request $request){
 		$this->validator($request->all(),'update');
 
-		$semesterName=$request->course_name;
-		$semesterCredit=$request->course_credit;
-		$semesterIdentity=$request->course_code;
-		$semesterType=$request->course_type;
-		$contactHrs=$request->course_contact_hour;
-		$semester = Course::where('course_id',$request->course_id)->update(['courseName'=>$semesterName,'courseCredit'=>$semesterCredit,'courseIdentity'=>$semesterIdentity,'courseType'=>$semesterType,'contactHrs'=>$contactHrs]);
+		$semesterName =$request->semester_name;
+		$startingDate=$request->startDate;
+		$endingDate=$request->endDate;
+		$section_female=$request->section_female;
+		$section_male=$request->section_male;
+		$semesterStatus=1;
+		$semester = Semester::where('semester_id',$request->semester_id)->update(['semesterName'=>$semesterName,'startingDate'=>$startingDate,'endingDate'=>$endingDate,'section_female'=>$section_female,'section_male'=>$section_male]);
 		if($semester){
-			return redirect(route('profile'))->withSuccess('Course Updated Successfully');
+			return redirect(route('profile'))->withSuccess('Semester Updated Successfully');
 		}else {
-			return redirect(route('profile'))->withFailed('Course Update Failed!!');
+			return redirect(route('profile'))->withFailed('Semester Update Failed!!');
 		}
 	}
 
@@ -149,6 +152,8 @@ class SemesterController extends Controller
 					'semester_name' => $semesterName,
 	        'startDate' => 'required|date',
 	        'endDate' => 'required|date|after:startDate',
+	        'section_female' => 'required|numeric',
+	        'section_male' => 'required|numeric',
 	    ])->validate();
 	}
 }

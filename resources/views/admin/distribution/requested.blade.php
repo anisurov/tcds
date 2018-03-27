@@ -16,6 +16,7 @@
                   <th>Contact Hour</th>
                   <th>Section</th>
                   <th>Teacher</th>
+                  <th>Approve</th>
               </tr>
           </thead>
 
@@ -28,6 +29,14 @@
                    <td>{{$value->hrs}}</td>
                    <td>{{$value->section}}</td>
                    <td>{{App\Teacher::where('t_id',$value->teacher_id)->pluck('t_name')->first()}}</td>
+                   <td>
+                       <form action="{{route('indvidual_approve')}}" method="post" class="side-by-side">
+                           {!! csrf_field() !!}
+                           <input type="hidden" name="request_id" value="{{$value->request_id}}">
+
+                           <input type="submit" class="btn btn-primary  btn-sm" value="Approve">
+                       </form>
+                   </td>
               </tr>
               @endforeach
 

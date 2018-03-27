@@ -47,12 +47,12 @@
                                                        Notification
                                                    </a>
                                                    <ul class="dropdown-menu">
-                                                     @php($notifications=App\Notify::where('end_date','>',date("Y-m-d"))->get())
+                                                     @php($notifications=App\Notify::select('semester.semesterName as semesterName','semester.semester_id as semester_id','notify.end_date as end_date')->where('end_date','>',date("Y-m-d"))->join('semester','semester.semester_id','=','notify.semester_id')->where('semesterStatus','!=','13')->where('semesterStatus','!=','0')->get())
                                                      @if($notifications->count()>0)
                                                     @foreach($notifications as $notification)
                                                        <li>
                                                           <a href="{{route('teacherAddcourseForm')}}/?semester_id={{$notification->semester_id}}">
-                                                            please add course to <b>{{App\Semester::where('semester_id',$notification->semester_id)->where('semesterStatus','!=','13')->where('semesterStatus','!=','0')->pluck('semesterName')->first()}}</b> within {{$notification->end_date}}
+                                                            please add course to <b>{{$notification->semesterName}}</b> within {{$notification->end_date}}
                                                           </a>
                                                        </li>
                                                     @endforeach
@@ -61,6 +61,7 @@
                                                     @endif
                                                </ul>
                       </li>
+                      <li class="{{Request::is('teacher/semester/active') ? "active" : "" }}"><a href="{{ route('teacherActiveSemester') }}">Active Semester</a></li>
                       @endif
                      @else
                      &nbsp;

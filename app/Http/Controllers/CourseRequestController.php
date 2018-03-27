@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Semester;
 use App\CourseRequest;
+use App\Course;
 use App\CourseToTeacher;
 use App\Teacher;
 use App\Notify;
+use DB;
 
 class CourseRequestController extends Controller
 {
@@ -38,20 +40,41 @@ class CourseRequestController extends Controller
       if(Notify::where('semester_id',$semester_id)->where('status',1)->count()<=0)
         return redirect(route('profile'))->withFailed('sorry!!Internal error Occured');
 
+        $requestd = DB::table('course')
+                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $semester_id)->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
+
+
       $teacher_data= Teacher::where('t_id',$teacher_id)->get();
       foreach($teacher_data as $teacher){
         $designation=$teacher->t_designation;
         $joining_date=$teacher->joining_date;
         $promotion_date=$teacher->promotion_date;
       }
-      if($designation=='Assistant Professor')
+      if($designation=='Assistant Professor'){
         $priority=3;
-      else if($designation=='Associate Professor')
+        $must_take_credit=15;
+        $quotaCredit=21;
+      }
+      else if($designation=='Associate Professor'){
         $priority=2;
-      else if($designation=='Lecturer')
+        $must_take_credit=12;
+        $quotaCredit=18;
+      }
+      else if($designation=='Lecturer'){
         $priority=1;
+        $must_take_credit=12;
+        $quotaCredit=18;
+      }
 
-      $course_requests=CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id])->get();
+      foreach($requestd as $value){
+        $takenCredit = $value->takenCredit;
+      }
+      if($takenCredit>=$quotaCredit){
+        return redirect(route('profile'))->withFailed('sorry!!Your qouta limit already reached . you have taken '.$takenCredit.' Credit');
+      }
+
+      $course_requests=CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id])->whereIn('status',[1,7])->get();
+    //  var_dump($course_requests);
       if ($course_requests) {
         $checker=0;
         $count=$course_requests->count();
@@ -122,9 +145,13 @@ class CourseRequestController extends Controller
     $store_course_request->teacher_id=$teacher_id;
     $store_course_request->semester_id=$semester_id;
     $store_course_request->priority=$priority;
-
+    $takenCredit= $takenCredit+Course::where('course_id',$course_id)->pluck('courseCredit')->first();
     if($store_course_request->save()){
-      return redirect(route('profile'))->withSuccess('Course request Successful');
+      if(($must_take_credit-$takenCredit)>0)
+      return redirect(route('profile'))->withSuccess('Course request Successful.You need to take '.($must_take_credit-$takenCredit).' more credit');
+      else {
+        return redirect(route('profile'))->withSuccess('Course request Successful.You can  take 6 extra credit');
+      }
     }else {
       return redirect(route('profile'))->withFailed('Course request Failed!!');
     }

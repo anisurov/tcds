@@ -13,7 +13,7 @@
                             	  <div class="input-group-addon">
 											 Name*
 					  					  </div>
-                                <input id="semester_name " type="text" class="form-control"  name="semester_name" value="" placeholder="Ex:SPRING-2018" required autofocus>
+                                <input id="semester_name " type="text" class="form-control"  name="semester_name" value="" placeholder="Enter semester Name" required autofocus>
                             </div>
                                 @if ($errors->has('semester_name'))
                                     <span class="help-block">
@@ -43,13 +43,42 @@
 											 End date*
 					  					  </div>
                                 <input id="endDate " type="date" class="form-control"  name="endDate" value="" placeholder="End date of semester" required autofocus>
-                            </div>                       
+                            </div>
           @if ($errors->has('endDate'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('endDate') }}</strong>
                                     </span>
                                 @endif
                         </div>
+
+                        <div class="form-group col-md-12 ">
+                            <div class="input-group {{ $errors->has('section_male') ? ' has-error' : '' }}">
+                                <div class="input-group-addon">
+                       No. of section(Male)*
+                        </div>
+                                <input id="section_male " type="text" class="form-control"  name="section_male" value="" placeholder="Enter Number of male section" required autofocus>
+                            </div>
+                                @if ($errors->has('section_male'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('section_male') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
+                        <div class="form-group col-md-12 ">
+                            <div class="input-group {{ $errors->has('section_female') ? ' has-error' : '' }}">
+                                <div class="input-group-addon">
+                       No. of section(Female)*
+                        </div>
+                                <input id="section_female " type="text" class="form-control"  name="section_female" value="" placeholder="Enter Number of female section" required autofocus>
+                            </div>
+                                @if ($errors->has('section_female'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('section_female') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-12 ">
                                 <button type="submit" class="btn btn-primary btn-sm pull-left">

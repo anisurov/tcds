@@ -4,6 +4,8 @@
 @foreach($data as $semester)
 @php($id=$semester->semester_id)
 @php($semesterName=$semester->semesterName)
+@php($section_male=$semester->section_male)
+@php($section_female=$semester->section_female)
 @endforeach
 <?php
 $teacher_infos =App\Teacher::where('t_email', Auth::user()->email)->get();
@@ -19,7 +21,7 @@ if ($designation=='Assistant Professor') {
     $can_take=12;
 }
 $requestd = DB::table('course')
-          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->where('status', 1)->get();
+          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
 $courseList = DB::table('course')
           ->select('course.course_id as course_id', 'course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs')
@@ -30,10 +32,11 @@ $courseList = DB::table('course')
            <div class="panel-heading"> Your requested course in  {{$semesterName}}</div>
            <div class="panel-body">
              @php($totalCredit=0)
+             @php($totalContactHour=0)
              @if($requestd->count()>0)
              <table class="table">
                <thead>
-                   <tr>
+                    <tr>
                        <th>Course ID</th>
                        <th>Name</th>
                        <th>Credit</th>
@@ -52,12 +55,22 @@ $courseList = DB::table('course')
                         <td>{{$value->section}}</td>
                    </tr>
                     @php($totalCredit=$totalCredit+$value->credit)
+                    @php($totalContactHour=$totalContactHour+$value->hrs)
                    @endforeach
 
                </tbody>
+               <tfoot>
+                 <tr>
+                     <td></td>                     
+                     <td><b>Total</b></td>
+                      <td>{{$totalCredit}}</td>
+                      <td>{{$totalContactHour}}</td>
+                      <td></td>
+                 </tr>
+               </tfoot>
            </table>
            @else
-           No course added yet!!
+           No course requested yet!!
            @endif
            </div>
           @if(($can_take-$totalCredit)>0) <div class="panel-footer"> you need to take <b>{{$can_take-$totalCredit}}</b> more credit</div>@endif
@@ -97,13 +110,27 @@ $courseList = DB::table('course')
 					  					  </div>
                                 <select id="section"  class="form-control"  name="section" required autofocus>
                                   <option>--select section--</option>
-
+                                  @if($section_male==3)
                                   <option value="MA">MA</option>
                                   <option value="MB">MB</option>
                                   <option value="MC">MC</option>
+                                  @elseif($section_male==2)
+                                  <option value="MA">MA</option>
+                                  <option value="MB">MB</option>
+                                  @elseif($section_male==1)
+                                  <option value="MA">MA</option>
+                                  @endif
+                                  @if($section_female==3)
                                   <option value="FA">FA</option>
                                   <option value="FB">FB</option>
                                   <option value="FC">FC</option>
+                                  @elseif($section_female==2)
+                                  <option value="FA">FA</option>
+                                  <option value="FB">FB</option>
+                                  @elseif($section_female==1)
+                                  <option value="FA">FA</option>
+                                  @endif
+
 
                                 </select>
                             </div>

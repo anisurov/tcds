@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use App\Notify;
 use App\Semester;
 use App\CourseRequest;
 use App\CourseToTeacher;
+use App\Teacher;
 use DB;
 
 class DistributionController extends Controller
@@ -20,15 +22,25 @@ class DistributionController extends Controller
     public function notify(Request $request)
     {
       $this->validator($request->all());
+      if(Semester::where('semester_id',$request->semester)->pluck('semesterStatus')->first()==1){
+        $day=date("Y-m-d");
+        if(Notify::where('semester_id',$request->semester)->where('status',1)->where('end_date','>',$day)->count()>0){
+          return redirect(route('profile'))->withFailed('Already notified!!');
+        }
       $notify = new Notify();
       $notify->semester_id = $request->semester;
       $notify->start_date = $request->startDate;
       $notify->end_date = $request->endDate;
+      $semester  = Semester::where('semester_id',$request->semester)->pluck('semesterName')->first();
       if($notify->save()){
+        $this->notifyThroughmail($semester,$request->endDate);
   			return redirect(route('profile'))->withSuccess('Notification Added Successfully');
   		}else {
   			return redirect(route('profile'))->withFailed('Notification Add Failed!!');
   		}
+    }else {
+      return redirect(route('profile'))->withFailed('Semester is not active!!');
+    }
     }
 
     public function active()
@@ -67,14 +79,14 @@ class DistributionController extends Controller
                 if($count==$checker){
                   if(Notify::where('semester_id',$id)->where('id',$notify_id)->update(['status'=>0]))
                     return redirect(route('profile'))->withSuccess('all requests approved successfully');
-                  echo $notify_id;
+                  //echo $notify_id;
 
                 }else {
                   return redirect(route('profile'))->withFailed('sorry!! Error Occured');
                 }
               }
             }else {
-              $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('status', 1)->get();
+              $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('status', 1)->get();
               return view('admin.distribution.requested',compact('requestd_course','semester'));
               }
         }else {
@@ -82,6 +94,35 @@ class DistributionController extends Controller
         }
       }else {
         return redirect(route('profile'))->withFailed('Your requested semester is not active!!');
+      }
+    }
+
+    public function indvidual_approve(Request $request)
+    {
+      $request_id = $request->request_id;
+      $course_requests=CourseRequest::where('id', $request_id)->where('status', 1)->get();
+          if ($course_requests) {
+
+            $Coursetoteacher = new CourseToTeacher();
+
+            foreach ($course_requests as $course) {
+
+              $Coursetoteacher->semester_id=$course->semester_id;
+              $Coursetoteacher->course_id=$course->course_id;
+              $Coursetoteacher->t_id=$course->teacher_id;
+              $Coursetoteacher->section=$course->section;
+
+            }
+            if ($Coursetoteacher->save()) {
+              if(CourseRequest::where('id', $request_id)->update(['status'=>7]))
+                return redirect(route('profile'))->withSuccess('Request approve successfully');
+              else {
+                return redirect(route('profile'))->withFailed('Request approve Failed');
+              }
+            }
+      }
+      else {
+        return redirect(route('profile'))->withFailed('Error Occured!!');
       }
     }
 
@@ -94,4 +135,27 @@ class DistributionController extends Controller
   	        'endDate' => 'required|date|after:startDate',
   	    ])->validate();
   	}
+
+
+    public function notifyThroughmail($semester_name,$end_date)
+    {
+         $title = $semester_name;
+        $content = $end_date;
+        foreach(Teacher::select('t_email')->get() as $teacher){
+          $username = $teacher->t_email;
+        Mail::send('emails.notify',['title'=>$title,'content'=>$content],function ($message) use ($username)
+        {
+
+          $message->from('no-reply@tcdsystem.com', 'Administrator');
+
+            $message->to($username);
+
+           // $message->attach($attach);
+
+            $message->subject("Course Distribution System Credintials");
+
+        });
+      }
+
+    }
 }
