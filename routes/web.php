@@ -104,6 +104,11 @@ Route::get('/distribution/approve','DistributionController@approve')->name('requ
 Route::post('/distribution/indvidual','DistributionController@indvidual_approve')->name('indvidual_approve');
 Route::get('/distribution/active','DistributionController@active')->name('active');
 /************************[end of Course Distribution]****************************/
+
+
+/************************[start of Course Allotment manually]***********************************/
+Route::post('/allot/course','AllotmentController@Allotment')->name('allotment');
+/************************[end of Course Allotment manually]****************************/
 });
 
 

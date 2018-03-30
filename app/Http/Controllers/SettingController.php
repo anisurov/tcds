@@ -29,7 +29,7 @@ class SettingController extends Controller
            $teacher = $this->setData();
       	   return view('setting',compact('teacher'));
     }
- 
+
  public function showProfileEditForm($request){
 	if($this->verifyPermission(Auth::user()->check)==false){
 		Session::flash('failed','You are not permitted to view this page');
@@ -37,7 +37,7 @@ class SettingController extends Controller
 	}else
            $teacher = $this->setData();
       	   return view('setting',compact('teacher','request'));
-	
+
  }
 
 
@@ -46,15 +46,15 @@ class SettingController extends Controller
 		Session::flash('failed','You are not permitted to view this page');
 		return redirect('/profile');
 	}
-        
+
 		$this->validateData($request->all());
 	foreach($request->all() as $key=>$value){
-			if($this->updateData($key,$value,Auth::user()->email))	
-			Session::flash('success','Your profile updated successfully');	
+			if($this->updateData($key,$value,Auth::user()->email))
+			Session::flash('success','Your profile updated successfully');
 			else
 			Session::flash('failed','profile update failed');}
       	   return redirect('/setting');
-	
+
  }
 
 
@@ -71,24 +71,24 @@ public function changePassword(Request $request)
       return response()->json(array('error' => $validator->getMessageBag()->toArray()), 400);
     }
     else
-    {  
-      $current_password = Auth::User()->password;           
+    {
+      $current_password = Auth::User()->password;
       if(Hash::check($request_data['current_password'], $current_password))
-      {           
-        $user_id = Auth::User()->id;                       
+      {
+        $user_id = Auth::User()->id;
         $obj_user = User::find($user_id);
         $obj_user->password = Hash::make($request_data['password']);;
-        $obj_user->save(); 
-        Session::flash('success','Your password changed successfully');	
+        $obj_user->save();
+        Session::flash('success','Your password changed successfully');
       }
       else
-      {           
+      {
         Session::flash('failed','password change failed');
       }
-    }  
-	return redirect('/setting');      
-  }   
- 
+    }
+	return redirect('/setting');
+  }
+
   public function admin_credential_rules(array $data)
 {
   $messages = [
@@ -99,11 +99,11 @@ public function changePassword(Request $request)
   $validator = Validator::make($data, [
     'current_password' => 'required',
     'password' => 'required|same:password',
-    'password_confirmation' => 'required|same:password',     
+    'password_confirmation' => 'required|same:password',
   ], $messages)->validate();
 
   return $validator;
-}  
+}
 
  protected  function verifyPermission($checker){
       if($checker==0){
@@ -122,18 +122,21 @@ protected function updateData($key,$value,$email){
 			break;
 			case 'joingDate':
 				return Teacher::where('t_email',$email)->update(['joining_date'=>$value]);
-			break;			
+			break;
 			case 'promotionDate':
 				return Teacher::where('t_email',$email)->update(['promotion_date'=>$value]);
-			break;	
+			break;
 			case 't_designation':
 				return Teacher::where('t_email',$email)->update(['t_designation'=>$value]);
-			break;			
+			break;
+			case 'busy':
+				return Teacher::where('t_email',$email)->update(['is_busy'=>$value]);
+			break;
 			default:
 			return false;
-		
+
 		}
-} 
+}
  protected function setData(){
 	$value = $this->getData();
 	return $value;
@@ -150,20 +153,25 @@ protected function updateData($key,$value,$email){
 			case 'joingDate':
  			      return Validator::make($data, [
           			  'joingDate'=> 'required|date',])->validate();
-				
-			break;			
+
+			break;
 			case 'promotionDate':
 		             return Validator::make($data, ['promotionDate'=> 'required|date',])->validate();
 
-			break;	
+			break;
 			case 't_designation':
  		             return Validator::make($data, [
 		            't_designation' => 'required|string|max:50',])->validate();
-			break;			
+			break;
+
+			case 'busy':
+ 		             return Validator::make($data, [
+		            'busy' =>  array('required','regex:/yes|no$/'),])->validate();
+			break;
 
 			default:
 			return false;
-		
+
 		}
 	}
 

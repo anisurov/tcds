@@ -83,6 +83,7 @@ class registrationController extends Controller
 		't_image'=>$image,
 		't_designation'=>$data['t_designation'],
     'joining_date'=>date("Y-m-d", strtotime($data['joingDate'])),
+    'is_busy' =>0,
     ]);
 
     $resUserCR=User::create([

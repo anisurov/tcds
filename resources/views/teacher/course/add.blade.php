@@ -12,14 +12,26 @@ $teacher_infos =App\Teacher::where('t_email', Auth::user()->email)->get();
 foreach ($teacher_infos as $value) {
     $t_id=$value->t_id;
     $designation=$value->t_designation;
+    $busy=$value->is_busy;
 }
 if ($designation=='Assistant Professor') {
-    $can_take=15;
+    if ($busy == 'yes') {
+      $can_take=9;
+    }else {
+      $can_take=15;
+    }
 } elseif ($designation=='Associate Professor') {
     $can_take=12;
 } elseif ($designation=='Lecturer') {
     $can_take=12;
 }
+
+$theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+
+foreach($theroy_credit as $value){
+  $theoryCredit = $value->credit;
+}
+
 $requestd = DB::table('course')
           ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
@@ -61,7 +73,7 @@ $courseList = DB::table('course')
                </tbody>
                <tfoot>
                  <tr>
-                     <td></td>                     
+                     <td></td>
                      <td><b>Total</b></td>
                       <td>{{$totalCredit}}</td>
                       <td>{{$totalContactHour}}</td>
@@ -73,7 +85,14 @@ $courseList = DB::table('course')
            No course requested yet!!
            @endif
            </div>
-          @if(($can_take-$totalCredit)>0) <div class="panel-footer"> you need to take <b>{{$can_take-$totalCredit}}</b> more credit</div>@endif
+          @if(($can_take-$totalCredit)>0)
+          <div class="panel-footer">
+            you need to take <b>{{$can_take-$totalCredit}}</b> more credit.
+            @if((6-$theoryCredit)>0)
+            Including {{6-$theoryCredit}} credit theory.
+            @endif
+          </div>
+          @endif
      </div>
    </div>
  <div class="col-md-6">

@@ -42,6 +42,7 @@ class CourseRequestController extends Controller
 
         $requestd = DB::table('course')
                   ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $semester_id)->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
+      $theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $semester_id)->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
 
 
       $teacher_data= Teacher::where('t_id',$teacher_id)->get();
@@ -49,10 +50,15 @@ class CourseRequestController extends Controller
         $designation=$teacher->t_designation;
         $joining_date=$teacher->joining_date;
         $promotion_date=$teacher->promotion_date;
+        $busy=$teacher->is_busy;
       }
       if($designation=='Assistant Professor'){
         $priority=3;
-        $must_take_credit=15;
+        if ($busy == 'yes') {
+          $must_take_credit=9;
+        }else {
+          $must_take_credit=15;
+        }
         $quotaCredit=21;
       }
       else if($designation=='Associate Professor'){
@@ -64,6 +70,9 @@ class CourseRequestController extends Controller
         $priority=1;
         $must_take_credit=12;
         $quotaCredit=18;
+      }
+      foreach($theroy_credit as $value){
+        $theoryCredit = $value->credit;
       }
 
       foreach($requestd as $value){
@@ -90,16 +99,17 @@ class CourseRequestController extends Controller
           if ($course_request->priority==$priority) {
             if (Teacher::where('t_id',$course_request->teacher_id)->pluck('joining_date')->first()<$joining_date) {
               CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id])->update(['status'=>0]);
+
             }
             else {
-              return redirect(route('profile'))->withFailed('sorry!!This course already alloated');
+              return redirect(route('profile'))->withFailed('sorry!!This course already requested');
             }
 
             if (Teacher::where('t_id',$course_request->teacher_id)->pluck('promotion_date')->first()<$promotion_date) {
               CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id])->update(['status'=>0]);
             }
             else {
-              return redirect(route('profile'))->withFailed('sorry!!This course already alloted');
+              return redirect(route('profile'))->withFailed('sorry!!This course already requested');
             }
           }
         }else if ($course_request->status==7) {
@@ -110,6 +120,8 @@ class CourseRequestController extends Controller
           if ($course_request->priority<$priority) {
             CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id])->update(['status'=>0]);
 
+            CourseRequest::insert(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id,'status'=>7,'priority'=>$priority]);
+
             if(CourseToTeacher::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'t_id'=>$course_request->teacher_id])->update(['t_id'=>$teacher_id]))
             return redirect(route('profile'))->withSuccess('course alloated successfully');
           }
@@ -117,6 +129,9 @@ class CourseRequestController extends Controller
           if ($course_request->priority==$priority) {
             if (Teacher::where('t_id',$course_request->teacher_id)->pluck('joining_date')->first()<$joining_date) {
               CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id])->update(['status'=>0]);
+
+              CourseRequest::insert(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id,'status'=>7,'priority'=>$priority]);
+
               if(CourseToTeacher::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'t_id'=>$course_request->teacher_id])->update(['t_id'=>$teacher_id]))
               return redirect(route('profile'))->withSuccess('course alloated successfully');
             }
@@ -126,6 +141,9 @@ class CourseRequestController extends Controller
 
             if (Teacher::where('t_id',$course_request->teacher_id)->pluck('promotion_date')->first()<$joining_date) {
               CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id])->update(['status'=>0]);
+
+              CourseRequest::insert(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'teacher_id'=>$course_request->teacher_id,'status'=>7,'priority'=>$priority]);
+
               if(CourseToTeacher::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id,'t_id'=>$course_request->teacher_id])->update(['t_id'=>$teacher_id]))
               return redirect(route('profile'))->withSuccess('course alloated successfully');
             }
@@ -145,10 +163,20 @@ class CourseRequestController extends Controller
     $store_course_request->teacher_id=$teacher_id;
     $store_course_request->semester_id=$semester_id;
     $store_course_request->priority=$priority;
+    $thisTheoryCredit=Course::where('course_id',$course_id)->where('category','theory')->pluck('courseCredit')->first();
+    if ($thisTheoryCredit) {
+      $theoryCredit=$thisTheoryCredit+$theoryCredit;
+    }
     $takenCredit= $takenCredit+Course::where('course_id',$course_id)->pluck('courseCredit')->first();
     if($store_course_request->save()){
-      if(($must_take_credit-$takenCredit)>0)
-      return redirect(route('profile'))->withSuccess('Course request Successful.You need to take '.($must_take_credit-$takenCredit).' more credit');
+      if(($must_take_credit-$takenCredit)>0){
+        if((6-$theoryCredit)>0){
+          $extraMsg='Including '.(6-$theoryCredit).' credit theory';
+        }else {
+          $extraMsg='';
+        }
+      return redirect(route('profile'))->withSuccess('Course request Successful.You need to take '.($must_take_credit-$takenCredit).' more credit.'.$extraMsg);
+    }
       else {
         return redirect(route('profile'))->withSuccess('Course request Successful.You can  take 6 extra credit');
       }

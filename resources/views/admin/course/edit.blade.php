@@ -83,6 +83,24 @@
                         </div>
 
                         <div class="form-group col-md-12 ">
+                            <div class="input-group {{ $errors->has('category') ? ' has-error' : '' }}">
+                            	  <div class="input-group-addon">
+											 Category*
+					  					  </div>
+                                <select name="category" class="form-control custom-control">
+													<option value="">--- Select Category ---</option>
+													<option value="theory" {{$course->category=='theory' ? 'selected' : ''}}>Theory</option>
+													<option value="sessional" {{$course->category=='sessional' ? 'selected' : ''}}>Sessional</option>
+											</select>
+                            </div>
+                                @if ($errors->has('category'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('category') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
+                        <div class="form-group col-md-12 ">
                             <div class="input-group {{ $errors->has('course_type') ? ' has-error' : '' }}">
                             	  <div class="input-group-addon">
 											 Type*

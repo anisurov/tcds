@@ -152,7 +152,7 @@ class DistributionController extends Controller
 
            // $message->attach($attach);
 
-            $message->subject("Course Distribution System Credintials");
+            $message->subject("Course Distribution System - Request for course choice list");
 
         });
       }

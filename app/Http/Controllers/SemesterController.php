@@ -144,7 +144,7 @@ class SemesterController extends Controller
 	{
 
 				if ($task=='add') {
-					 $semesterName = 'required|max:20|unique:semester,semesterName';
+					 $semesterName = 'required|max:20';
 				}else{
 					$semesterName = 'required|max:20';
 				}

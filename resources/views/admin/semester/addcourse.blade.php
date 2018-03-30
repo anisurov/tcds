@@ -58,7 +58,7 @@ $courseList = DB::table('course')
 					  					  </div>
                                 <select id="course_name"  class="form-control"  name="course_name" required autofocus>
                                   <option>--select course--</option>
-                                  @php($courses=DB::select('SELECT * FROM course WHERE course_id not in (SELECT course_id FROM course_in_current_semester)'))
+                                  @php($courses=DB::select('SELECT * FROM course WHERE course_id not in (SELECT course_id FROM course_in_current_semester where semester_id='.$id.')'))
                                   @foreach($courses as $course)
                                   <option value="{{$course->course_id}}">{{$course->courseName}}</option>
                                   @endforeach

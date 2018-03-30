@@ -29,6 +29,7 @@ class CourseController extends Controller
 		$course->courseIdentity=$request->course_code;
 		$course->courseType=$request->course_type;
 		$course->contactHrs=$request->course_contact_hour;
+		$course->category=$request->category;
 		if($course->save()){
 			return redirect(route('profile'))->withSuccess('Course Added Successfully');
 		}else {
@@ -41,11 +42,12 @@ class CourseController extends Controller
 
 		$courseName=$request->course_name;
 		$courseCredit=$request->course_credit;
-		$course->semester=$request->term;
+		$semester=$request->term;
 		$courseIdentity=$request->course_code;
 		$courseType=$request->course_type;
 		$contactHrs=$request->course_contact_hour;
-		$course = Course::where('course_id',$request->course_id)->update(['courseName'=>$courseName,'courseCredit'=>$courseCredit,'courseIdentity'=>$courseIdentity,'courseType'=>$courseType,'contactHrs'=>$contactHrs]);
+		$category=$request->category;
+		$course = Course::where('course_id',$request->course_id)->update(['courseName'=>$courseName,'courseCredit'=>$courseCredit,'courseIdentity'=>$courseIdentity,'courseType'=>$courseType,'semester'=>$semester,'contactHrs'=>$contactHrs,'category'=>$category]);
 		if($course){
 			return redirect(route('profile'))->withSuccess('Course Updated Successfully');
 		}else {
@@ -68,6 +70,7 @@ class CourseController extends Controller
 	        'term' => 'required|numeric',
 	        'course_contact_hour' => 'required|numeric',
 	        'course_type' =>  array('required','regex:/core|indp|urem$/'),
+	        'category' =>  array('required','regex:/theory|sessional$/'),
 	    ])->validate();
 	}
 }

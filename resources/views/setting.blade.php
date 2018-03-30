@@ -58,6 +58,16 @@
                         </div>
                   </div>
 	       @endsection
+
+         @section('busy')
+         <div class="form-group" style="margin-right:2px;margin-left:2px;">
+      <div class="input-group col-md-12">
+<div class="input-group-addon" style="width:15%">Busy</div>
+                  <div class="form-control" style="width:60%">{{$info->is_busy}}</div>
+<a class="btn btn-primary pull-right" style="width:15%;margin-right:2px;margin-left:2px;" 				   role="button" href="{!!route('updateProfile','busy')!!}">Edit</a>
+               </div>
+         </div>
+   	       @endsection
 		   @isset($request)
 			@switch($request)
 				@case('name')
@@ -71,7 +81,7 @@
                                <span class="alert-danger">
                                <strong>{{ $errors->first('joingDate') }}</strong>
                                </span>
-                               @endif 
+                               @endif
                                </div>
                                {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
                                {!! Form::close() !!}
@@ -79,9 +89,10 @@
 					@yield('designation')
 					@yield('joining_date')
 					@yield('promotion_date')
+          @yield('busy')
 					@yield('changepass')
           			@break
-				
+
 				@case('designation')
 				{!! Form::open(['url'=>route('update'), 'class'=>'form-horizontal','files' => true]) !!}
 		               <div class="form-group" style="margin-right:2px;margin-left:2px;">
@@ -96,9 +107,9 @@
 					@yield('name')
 					@yield('joining_date')
 					@yield('promotion_date')
+          @yield('busy')
 					@yield('changepass')
-				
-				@break				
+				@break
 				@case('jdate')
        			        <div class="form-group{{ $errors->has('t_email') ? ' has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
                                  <div class="input-group">
@@ -109,7 +120,7 @@
                                <span class="alert-danger">
                                <strong>{{ $errors->first('joingDate') }}</strong>
                                </span>
-                               @endif 
+                               @endif
                                 </div>
                                {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
                                {!! Form::close() !!}
@@ -117,10 +128,10 @@
 					@yield('name')
 					@yield('designation')
 					@yield('promotion_date')
+          @yield('busy')
 					@yield('changepass')
-				
-				@break				
-				
+				@break
+
 				@case('pdate')
 				{!! Form::open(['url'=>route('update'), 'class'=>'form-horizontal']) !!}
                                 <div class="form-group{{ $errors->has('promotionDate') ? ' has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
@@ -132,7 +143,7 @@
                                <span class="alert-danger">
                                <strong>{{ $errors->first('promotionDate') }}</strong>
                                </span>
-                               @endif 
+                               @endif
                                 </div>
                                {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
                                {!! Form::close() !!}
@@ -140,37 +151,64 @@
 					@yield('name')
 					@yield('designation')
 					@yield('joining_date')
+          @yield('busy')
 					@yield('changepass')
-				
-				@break				
-				
+				@break
+
+        @case('busy')
+				{!! Form::open(['url'=>route('update'), 'class'=>'form-horizontal']) !!}
+                                <div class="form-group{{ $errors->has('promotionDate') ? ' has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
+                                 <div class="input-group">
+                                 {!! Form::label('busy','Busy',['class'=>'input-group-addon']) !!}
+                                 <select name="busy" class="form-control custom-control">
+           													<option value="">--- select ---</option>
+           													<option value="yse" {{$info->is_busy=='yes' ? 'selected' : ''}}>yes</option>
+           													<option value="no" {{$info->is_busy=='no' ? 'selected' : ''}}>no</option>
+ 											            </select>
+                                </div>
+	                	@if ($errors->has('promotionDate'))
+                               <span class="alert-danger">
+                               <strong>{{ $errors->first('promotionDate') }}</strong>
+                               </span>
+                               @endif
+                                </div>
+                               {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
+                               {!! Form::close() !!}
+				<br><hr><br>
+					@yield('name')
+					@yield('designation')
+					@yield('joining_date')
+          @yield('promotion_date')
+					@yield('changepass')
+				@break
+
 				@case('changepass')
 				{!! Form::open(['url'=>route('changepass'), 'class'=>'form-horizontal']) !!}
-                                <div class="form-group{{ $errors->has('current_password') ? ' has-error' : '' }}" 
+                                <div class="form-group{{ $errors->has('current_password') ? ' has-error' : '' }}"
 		style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
-            {!! Form::label('current_password','Current Password',['class'=>'input-group-addon']) !!} 
+            {!! Form::label('current_password','Current Password',['class'=>'input-group-addon']) !!}
             {!! Form::password('current_password',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
 		@if($errors->has('current_password'))
 		<span class="alert-danger">
                       <strong>{{ $errors->first('password') }}</strong>
                  </span>
-               @endif 
+               @endif
           </div>
-			<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}" 
+			<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}"
 		style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
-            {!! Form::label('password','Password',['class'=>'input-group-addon']) !!} 
+            {!! Form::label('password','Password',['class'=>'input-group-addon']) !!}
             {!! Form::password('password',['class'=>'form-control', 'required'=>'required']) !!}
             </div>
 		@if($errors->has('password'))
 		<span class="alert-danger">
                       <strong>{{ $errors->first('password') }}</strong>
                  </span>
-               @endif 
+               @endif
           </div>
-          <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}" 
+          <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}"
 		style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('password_confirmation','Confirm Password',['class'=>'input-group-addon']) !!}
@@ -180,8 +218,8 @@
                  <span class="alert-danger">
                       <strong>{{ $errors->first('password_confirmation') }}</strong>
                  </span>
-		@endif 
-          </div>		
+		@endif
+          </div>
                                {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
                                {!! Form::close() !!}
 				<br><hr><br>
@@ -189,11 +227,11 @@
 					@yield('designation')
 					@yield('joining_date')
 					@yield('promotion_date')
-				
-				@break				
-				
-				
-				@default 
+          @yield('busy')
+				@break
+
+
+				@default
 			@endswitch
 		  @endisset
 		  @empty($request)
@@ -201,8 +239,9 @@
 			@yield('designation')
 			@yield('joining_date')
 			@yield('promotion_date')
+      @yield('busy')
 			@yield('changepass')
-		  @endempty	
+		  @endempty
 	      @endforeach
                 </div>
             </div>

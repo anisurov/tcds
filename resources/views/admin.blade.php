@@ -43,6 +43,8 @@
                                Time expired
                                @elseif($years==0&&$months>0&&$days>0)
                                {{$months}} months {{$days}} days
+                               @elseif($years==0&&$months>0&&$days==0)
+                               {{$months}} months
                                @elseif($years==0&&$months==0&&$days>0)
                                 {{$days}} days
                                @elseif($years>0&&$months>0&&$days>0)
