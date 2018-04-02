@@ -26,4 +26,17 @@ class profileController extends Controller
       return view('teacher',compact('teacher','semester'));
     }
   }
+
+  public function teacher(){
+    $check= Auth::user()->check;
+   // echo "AAA".$check."<br>";
+    if($check==0){
+      return view('admin');
+    }
+    if($check==1){
+      $email = Auth::user()->email;
+      $teacher = Teacher::where('t_email',$email)->get();
+      return view('teacher.profile',compact('teacher'));
+    }
+  }
 }

@@ -11,6 +11,7 @@ use App\CourseRequest;
 use App\CourseToTeacher;
 use App\Teacher;
 use DB;
+use Session;
 
 class DistributionController extends Controller
 {
@@ -71,37 +72,87 @@ class DistributionController extends Controller
                   $Coursetoteacher->course_id=$course->course_id;
                   $Coursetoteacher->t_id=$course->teacher_id;
                   $Coursetoteacher->section=$course->section;
+                  $Coursetoteacher->status=1;
                   if ($Coursetoteacher->save()) {
                     if(CourseRequest::where('semester_id', $id)->where('course_id', $course->course_id)->where('teacher_id', $course->teacher_id)->where('section', $course->section)->update(['status'=>7]))
                     $checker=$checker+1;
                   }
                 }
                 if($count==$checker){
-                  if(Notify::where('semester_id',$id)->where('id',$notify_id)->update(['status'=>0]))
-                    return redirect(route('profile'))->withSuccess('all requests approved successfully');
+                  if(Notify::where('semester_id',$id)->where('id',$notify_id)->update(['status'=>0])){
+                    $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id','course_request.status as status')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->whereIn('status',[ 1,7])->get();
+                    Session::flash('success','all requests approved successfully');
+
+                    return  view('admin.distribution.requested',compact('requestd_course','id'));
+
+                  }
                   //echo $notify_id;
 
                 }else {
                   return redirect(route('profile'))->withFailed('sorry!! Error Occured');
                 }
+              }else {
+                return redirect(route('profile'))->withFailed('NO Requests!!');
               }
             }else {
-              $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('status', 1)->get();
-              return view('admin.distribution.requested',compact('requestd_course','semester'));
+              $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id','course_request.status as status')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->whereIn('status',[ 1,7])->get();
+
+              return view('admin.distribution.requested',compact('requestd_course','id'));
               }
         }else {
-          return redirect(route('profile'))->withFailed('Requests already approved');
+          $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id','course_request.status as status')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->whereIn('status',[ 1,7])->get();
+          //Session::flash('failed','Requests already approved');
+          return view('admin.distribution.requested',compact('requestd_course','id'));
+
         }
       }else {
         return redirect(route('profile'))->withFailed('Your requested semester is not active!!');
       }
     }
 
+    public function approveAll(Request $request)
+    {
+      $id = $request->semester_id;
+
+        $course_requests=CourseRequest::where('semester_id', $id)->where('status', 1)->get();
+            if ($course_requests) {
+              $count=$course_requests->count();
+              $checker=0;
+              foreach ($course_requests as $course) {
+                $Coursetoteacher = new CourseToTeacher();
+                $Coursetoteacher->semester_id=$id;
+                $Coursetoteacher->course_id=$course->course_id;
+                $Coursetoteacher->t_id=$course->teacher_id;
+                $Coursetoteacher->section=$course->section;
+                $Coursetoteacher->status=1;
+                if ($Coursetoteacher->save()) {
+                  if(CourseRequest::where('semester_id', $id)->where('course_id', $course->course_id)->where('teacher_id', $course->teacher_id)->where('section', $course->section)->update(['status'=>7]))
+                  $checker=$checker+1;
+                }
+              }
+              if($count==$checker){
+                
+                  $requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.teacher_id as teacher_id','course_request.id as request_id','course_request.status as status')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->whereIn('status',[ 1,7])->get();
+                  Session::flash('success','all requests approved successfully');
+
+                  return  view('admin.distribution.requested',compact('requestd_course','id'));
+
+
+                //echo $notify_id;
+
+              }else {
+                return redirect(route('profile'))->withFailed('sorry!! Error Occured');
+              }
+            }else {
+              return redirect(route('profile'))->withFailed('NO Requests!!');
+            }
+    }
+
     public function indvidual_approve(Request $request)
     {
       $request_id = $request->request_id;
-      $course_requests=CourseRequest::where('id', $request_id)->where('status', 1)->get();
-          if ($course_requests) {
+      $course_requests=CourseRequest::where(['id'=>$request_id,'status'=> 1])->get();
+          if ($course_requests && $course_requests->count()>0) {
 
             $Coursetoteacher = new CourseToTeacher();
 
@@ -111,6 +162,7 @@ class DistributionController extends Controller
               $Coursetoteacher->course_id=$course->course_id;
               $Coursetoteacher->t_id=$course->teacher_id;
               $Coursetoteacher->section=$course->section;
+              $Coursetoteacher->status=1;
 
             }
             if ($Coursetoteacher->save()) {
@@ -122,7 +174,36 @@ class DistributionController extends Controller
             }
       }
       else {
-        return redirect(route('profile'))->withFailed('Error Occured!!');
+        return redirect(route('profile'))->withFailed('Error Occured!! may be already approved');
+      }
+    }
+
+    public function indvidual_disapprove(Request $request)
+    {
+      $request_id = $request->request_id;
+      $course_requests=CourseRequest::where(['id'=>$request_id,'status'=> 7])->get();
+          if ($course_requests && $course_requests->count()>0) {
+
+
+
+            foreach ($course_requests as $course) {
+
+              $semester_id=$course->semester_id;
+              $course_id=$course->course_id;
+              $t_id=$course->teacher_id;
+              $section=$course->section;
+
+            }
+            if (CourseToTeacher::where(['semester_id'=>$semester_id,'course_id'=>$course_id,'t_id'=>$t_id,'section'=>$section])->update(['status'=>0])) {
+              if(CourseRequest::where('id', $request_id)->update(['status'=>1]))
+                return redirect(route('profile'))->withSuccess('Request disapproved successfully');
+              else {
+                return redirect(route('profile'))->withFailed('Request disapprove Failed');
+              }
+            }
+      }
+      else {
+        return redirect(route('profile'))->withFailed('Error Occured!! may be already disapproved');
       }
     }
 

@@ -12,8 +12,8 @@
                         <th>Start date</th>
                         <th>End date</th>
                         <th>Edit</th>
-                        <th>Active/Deactive</th>
-                        <th>Delete</th>
+                    <!--    <th>Active/Deactive</th>
+                        <th>Delete</th>-->
                     </tr>
                 </thead>
 
@@ -31,6 +31,7 @@
                                 <input type="submit" class="btn btn-primary  btn-sm" value="Edit">
                             </form>
                         </td>
+                        <!--
                         <td>
                             <form action="{{route('activesemester')}}" method="post" class="side-by-side">
                                 {!! csrf_field() !!}
@@ -46,7 +47,7 @@
 
                                 <input type="submit" class="btn btn-primary  btn-sm" value="delete">
                             </form>
-                        </td>
+                        </td>-->
                     </tr>
 
                     @endforeach

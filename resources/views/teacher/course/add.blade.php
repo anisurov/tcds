@@ -37,7 +37,7 @@ $requestd = DB::table('course')
 
 $courseList = DB::table('course')
           ->select('course.course_id as course_id', 'course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs')
-          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where('course_in_current_semester.semester_id', $id)->get();
+          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where(['course_in_current_semester.semester_id'=>$id,'course_in_current_semester.status'=>1])->get();
  ?>
 <div class="col-md-6">
           <div class="panel panel-default inside-body-panel-shadow">

@@ -22,7 +22,7 @@ $semester_name=$semester_data->semesterName;
                        </div>
                        <select id="course"  class="form-control"  name="course" required autofocus>
                          <option>--select course--</option>
-                         @php($courses=DB::select('SELECT * FROM course WHERE course_id  in (SELECT course_id FROM course_in_current_semester where semester_id='.$semester.')'))
+                         @php($courses=DB::select('SELECT * FROM course WHERE course_id  in (SELECT course_id FROM course_in_current_semester where semester_id='.$semester.' and status=1)'))
                          @foreach($courses as $course)
                          <option value="{{$course->course_id}}">{{$course->courseName}}</option>
                          @endforeach

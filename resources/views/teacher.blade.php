@@ -8,10 +8,15 @@
                   @foreach($teacher as $data)
                     <div class="pull-right image">
                       <img class="img-circle" src="{{Storage::url($data->t_image)}}"
-                         alt="{{$data->t_name}}">
+                         alt="image of {{$data->t_name}}">
                      </div>
                       {{$data->t_name}}<br>
                       {{$data->t_designation}}<br>
+                      @php($result=DB::select('SELECT course_id FROM `course_alloted_to_teacher` where t_id = '.$data->t_id.' GROUP BY course_id'))
+                      @if($result)
+                      @php($count=count($result))
+                      Unique Course Number : <b>{{$count}}</b>
+                      @endif
                   @endforeach
                 </div>
 
@@ -27,7 +32,7 @@
                         $t_id= App\Teacher::where('t_email',Auth::user()->email)->pluck('t_id')->first();
                         $alloted_course = DB::table('course')
                                   ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.semester as term','course.contactHrs as hrs','course_alloted_to_teacher.section as section')
-                                  ->join('course_alloted_to_teacher', 'course_alloted_to_teacher.course_id', '=', 'course.course_id')->where('course_alloted_to_teacher.semester_id',$data->semester_id)->where('course_alloted_to_teacher.t_id',$t_id)->get();
+                                  ->join('course_alloted_to_teacher', 'course_alloted_to_teacher.course_id', '=', 'course.course_id')->where('course_alloted_to_teacher.semester_id',$data->semester_id)->where('course_alloted_to_teacher.t_id',$t_id)->where('course_alloted_to_teacher.status',1)->get();
                          ?>
                         @if($alloted_course->count()>0)
                         <table class="table">

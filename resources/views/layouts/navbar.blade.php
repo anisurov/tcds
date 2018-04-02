@@ -1,4 +1,6 @@
         <li class="{{Request::is('registration') ? "active" : "" }}"><a href="{{ url('/registration') }}">Teacher Registration</a></li>
+
+        <li class="{{Request::is('/teacher/all') ? "active" : "" }}"><a href="{{ route('teacherlist') }}">Teacher List</a></li>
 <li class="dropdown {{Request::is('#') ? "active" : "" }}">
                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                                  Course
@@ -50,10 +52,15 @@
                                       Notify
                                     </a>
                                  </li>
-			    <li>
+			                            <li>
                                     <a href="{{route('active')}}">
                                       Approve  Course Request
                                      </a>
+                                 </li>
+                                 <li>
+                                    <a href="{{route('allotCourse')}}">
+                                      Allot Course
+                                    </a>
                                  </li>
                          </ul>
 </li>

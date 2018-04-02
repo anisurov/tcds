@@ -120,8 +120,21 @@ class SemesterController extends Controller
 
 		$courseTosemester->course_id=$course_id;
 		$courseTosemester->semester_id=$semester_id;
+		$courseTosemester->status=1;
 		if($courseTosemester->save()){
 			return redirect(route('profile'))->withSuccess('Course added to semester Successfully');
+		}
+		else{
+			return redirect(route('profile'))->withFailed('operation Failed!!');
+		}
+	}
+
+	public function removeCourse(Request $request)
+	{
+		$id = $request->cis_id;
+
+		if(courseTosemester::where('cis_id',$id)->update(['status'=>13])){
+			return redirect(route('profile'))->withSuccess('Course removed from semester Successfully');
 		}
 		else{
 			return redirect(route('profile'))->withFailed('operation Failed!!');
@@ -133,7 +146,7 @@ class SemesterController extends Controller
 		$semester = $request->semester_id;
 		if (Semester::where('semester_id',$semester)->pluck('semesterStatus')->first()==1) {
 
-				$requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_alloted_to_teacher.section as section','course_alloted_to_teacher.t_id as teacher_id')->join('course_alloted_to_teacher', 'course.course_id', '=', 'course_alloted_to_teacher.course_id')->where('course_alloted_to_teacher.semester_id', $semester)->get();
+				$requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_alloted_to_teacher.section as section','course_alloted_to_teacher.t_id as teacher_id')->join('course_alloted_to_teacher', 'course.course_id', '=', 'course_alloted_to_teacher.course_id')->where('course_alloted_to_teacher.semester_id', $semester)->where('course_alloted_to_teacher.status',1)->get();
 				return view('admin.course.alloted',compact('requestd_course','semester'));
 		}	else {
 			return redirect(route('profile'))->withFailed('This semester is not active');

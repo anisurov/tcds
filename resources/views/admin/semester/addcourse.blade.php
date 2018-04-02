@@ -7,8 +7,8 @@
 @endforeach
 <?php
 $courseList = DB::table('course')
-          ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.contactHrs as hrs')
-          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where('course_in_current_semester.semester_id',$id)->get();
+          ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.contactHrs as hrs','course_in_current_semester.cis_id as cis_id')
+          ->join('course_in_current_semester', 'course_in_current_semester.course_id', '=', 'course.course_id')->where(['course_in_current_semester.semester_id'=>$id,'course_in_current_semester.status'=>1])->get();
  ?>
 <div class="col-md-6">
           <div class="panel panel-default inside-body-panel-shadow">
@@ -22,6 +22,7 @@ $courseList = DB::table('course')
                        <th>Name</th>
                        <th>Credit</th>
                        <th>Contact Hour</th>
+                       <th>Remove</th>
                    </tr>
                </thead>
 
@@ -32,6 +33,14 @@ $courseList = DB::table('course')
                        <td>{{$value->courseName}}</td>
                         <td>{{$value->credit}}</td>
                         <td>{{$value->hrs}}</td>
+                        <td>
+                            <form action="{{route('removeCourse')}}" method="post" class="side-by-side">
+                                {!! csrf_field() !!}
+                                <input type="hidden" name="cis_id" value="{{$value->cis_id}}">
+
+                                <input type="submit" class="btn btn-primary  btn-sm" value="Remove">
+                            </form>
+                        </td>
                    </tr>
 
                    @endforeach
@@ -58,7 +67,7 @@ $courseList = DB::table('course')
 					  					  </div>
                                 <select id="course_name"  class="form-control"  name="course_name" required autofocus>
                                   <option>--select course--</option>
-                                  @php($courses=DB::select('SELECT * FROM course WHERE course_id not in (SELECT course_id FROM course_in_current_semester where semester_id='.$id.')'))
+                                  @php($courses=DB::select('SELECT * FROM course WHERE course_id not in (SELECT course_id FROM course_in_current_semester where semester_id='.$id.' and status=1)'))
                                   @foreach($courses as $course)
                                   <option value="{{$course->course_id}}">{{$course->courseName}}</option>
                                   @endforeach

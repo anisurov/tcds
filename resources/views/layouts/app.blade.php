@@ -61,7 +61,8 @@
                                                     @endif
                                                </ul>
                       </li>
-                      <li class="{{Request::is('teacher/semester/active') ? "active" : "" }}"><a href="{{ route('teacherActiveSemester') }}">Active Semester</a></li>
+                      <li class="{{Request::is('teacher/semester/active') ? "active" : "" }}"><a href="{{ route('teacherActiveSemester') }}">Semester</a></li>
+                      <li class="{{Request::is('teacher') ? "active" : "" }}"><a href="{{ route('teacher') }}">Profile</a></li>
                       @endif
                      @else
                      &nbsp;

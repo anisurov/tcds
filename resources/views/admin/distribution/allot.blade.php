@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default inside-body-panel-shadow">
-              <div class="panel-heading">Dashboard</div>
+              <!--<div class="panel-heading"></div>-->
 
                 <div class="panel-body">
           @php($courseList=App\Semester::where('semesterStatus',1)->get())

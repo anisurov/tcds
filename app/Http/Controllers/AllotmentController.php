@@ -12,6 +12,10 @@ use App\Teacher;
 
 class AllotmentController extends Controller
 {
+    public function Allot()
+    {
+      return View('admin.distribution.allot');
+    }
     public function Allotment(Request $request)
     {
         $this->validator($request->all());
