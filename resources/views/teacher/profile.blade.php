@@ -36,6 +36,12 @@
                            <div class="form-control" style="width:60%">{{$data->t_email}}</div>
                         </div>
                   </div>
+                  <div class="form-group" style="margin-right:2px;margin-left:2px;">
+            		        <div class="input-group col-md-12">
+			                     <div class="input-group-addon" style="width:15%">Contact</div>
+                           <div class="form-control" style="width:60%">{{$data->t_contact}}</div>
+                        </div>
+                  </div>
                   @if(Auth::user()->check==0)
                   <div class="form-group" style="margin-right:2px;margin-left:2px;">
             		        <div class="input-group col-md-12">

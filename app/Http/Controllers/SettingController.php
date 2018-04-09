@@ -120,6 +120,9 @@ protected function updateData($key,$value,$email){
 			case 't_name':
 				return Teacher::where('t_email',$email)->update(['t_name'=>$value]);
 			break;
+			case 't_contact':
+				return Teacher::where('t_email',$email)->update(['t_contact'=>$value]);
+			break;
 			case 'joingDate':
 				return Teacher::where('t_email',$email)->update(['joining_date'=>$value]);
 			break;
@@ -150,6 +153,13 @@ protected function updateData($key,$value,$email){
           		    't_name' => 'required|string|max:255',])->validate();
 
 			break;
+
+      case 't_contact':
+ 			    return Validator::make($data, [
+          		    't_contact' => 'required|regex:/^[0][1][5-9][0-9][0-9](\d{6})$/|unique:teachers,t_contact',])->validate();
+
+			break;
+
 			case 'joingDate':
  			      return Validator::make($data, [
           			  'joingDate'=> 'required|date',])->validate();

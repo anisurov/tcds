@@ -12,10 +12,12 @@
                      </div>
                       {{$data->t_name}}<br>
                       {{$data->t_designation}}<br>
-                      @php($result=DB::select('SELECT course_id FROM `course_alloted_to_teacher` where t_id = '.$data->t_id.' GROUP BY course_id'))
+                      @php($result=DB::select('SELECT SUM(course.courseCredit) as creditTotal FROM `course` JOIN course_alloted_to_teacher ON course_alloted_to_teacher.course_id=course.course_id WHERE course_alloted_to_teacher.t_id='.$data->t_id))
                       @if($result)
-                      @php($count=count($result))
-                      Unique Course Number : <b>{{$count}}</b>
+                      @foreach($result as $creditHours)
+                      @php($count = $creditHours->creditTotal)
+                      @endforeach
+                      Total Credit : <b>{{$count}}</b>
                       @endif
                   @endforeach
                 </div>

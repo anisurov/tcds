@@ -26,6 +26,18 @@
                @endif
           </div>
 
+          <div class="form-group{{ $errors->has('t_contact') ? 'has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
+            <div class="input-group">
+            {!! Form::label('t_contact','Phone',['class'=>'input-group-addon']) !!}
+            {!! Form::text('t_contact','',['class'=>'form-control', 'required'=>'required']) !!}
+            </div>
+		@if ($errors->has('t_contact'))
+                 <span class="alert-danger">
+                      <strong>{{ $errors->first('t_contact') }}</strong>
+                 </span>
+               @endif
+          </div>
+
           <div class="form-group {{ $errors->has('t_designation') ? 'has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('t_designation','Designation',['class'=>'input-group-addon']) !!}
@@ -53,12 +65,7 @@
                  </span>
                @endif
           </div>
-          <div class="form-group" style="margin-right:2px;margin-left:2px;">
-            <div class="input-group">
-            {!! Form::label('contact','Contact No',['class'=>'input-group-addon']) !!}
-            {!! Form::text('contact','',['class'=>'form-control', 'required'=>'required']) !!}
-            </div>
-          </div>
+
           <div class="form-group" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('image','Picture',['class'=>'input-group-addon']) !!}

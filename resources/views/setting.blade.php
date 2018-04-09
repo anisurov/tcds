@@ -20,6 +20,15 @@
                         </div>
                   </div>
 	       @endsection
+		@section('contact')
+                  <div class="form-group" style="margin-right:2px;margin-left:2px;">
+            		<div class="input-group col-md-12">
+			   <div class="input-group-addon" style="width:15%">Contact</div>
+                           <div class="form-control" style="width:60%">{{$info->t_contact}}</div>
+			   <a class="btn btn-primary pull-right" style="width:15%;margin-right:2px;margin-left:2px;" 				   role="button" href="{!!route('updateProfile','contact')!!}">Edit</a>
+                        </div>
+                  </div>
+	       @endsection
 
 		  @section('designation')
                   <div class="form-group" style="margin-right:2px;margin-left:2px;">
@@ -77,21 +86,47 @@
                                     {!! Form::label('t_name','Name ( in English )',['class'=>'input-group-addon']) !!}
                                     {!! Form::text('t_name',$info->t_name,['class'=>'form-control', 'required'=>'required']) !!}
 		                 </div>
-@if ($errors->has('joingDate'))
+@if ($errors->has('t_name'))
                                <span class="alert-danger">
-                               <strong>{{ $errors->first('joingDate') }}</strong>
+                               <strong>{{ $errors->first('t_name') }}</strong>
                                </span>
                                @endif
                                </div>
                                {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
                                {!! Form::close() !!}
 				<br><hr><br>
+          @yield('contact')
 					@yield('designation')
 					@yield('joining_date')
 					@yield('promotion_date')
           @yield('busy')
 					@yield('changepass')
           			@break
+
+                @case('contact')
+        				{!! Form::open(['url'=>route('update'), 'class'=>'form-horizontal','files' => true]) !!}
+                                        <div class="form-group" style="margin-right:2px;margin-left:2px;">
+                                          <div class="input-group">
+                                            {!! Form::label('t_contact','Contact',['class'=>'input-group-addon']) !!}
+                                            {!! Form::text('t_contact',$info->t_contact,['class'=>'form-control', 'required'=>'required']) !!}
+        		                 </div>
+        @if ($errors->has('t_contact'))
+                                       <span class="alert-danger">
+                                       <strong>{{ $errors->first('t_contact') }}</strong>
+                                       </span>
+                                       @endif
+                                       </div>
+                                       {!! Form::submit('Submit',['class'=> 'btn btn-success']) !!}
+                                       {!! Form::close() !!}
+        				<br><hr><br>
+                  @yield('name')
+        					@yield('designation')
+        					@yield('joining_date')
+        					@yield('promotion_date')
+                  @yield('busy')
+        					@yield('changepass')
+                  			@break
+
 
 				@case('designation')
 				{!! Form::open(['url'=>route('update'), 'class'=>'form-horizontal','files' => true]) !!}
@@ -105,6 +140,7 @@
                                {!! Form::close() !!}
 				<br><hr><br>
 					@yield('name')
+          @yield('contact')
 					@yield('joining_date')
 					@yield('promotion_date')
           @yield('busy')
@@ -126,6 +162,7 @@
                                {!! Form::close() !!}
 				<br><hr><br>
 					@yield('name')
+          @yield('contact')
 					@yield('designation')
 					@yield('promotion_date')
           @yield('busy')
@@ -149,6 +186,7 @@
                                {!! Form::close() !!}
 				<br><hr><br>
 					@yield('name')
+          @yield('contact')
 					@yield('designation')
 					@yield('joining_date')
           @yield('busy')
@@ -176,6 +214,7 @@
                                {!! Form::close() !!}
 				<br><hr><br>
 					@yield('name')
+          @yield('contact')
 					@yield('designation')
 					@yield('joining_date')
           @yield('promotion_date')
@@ -224,6 +263,7 @@
                                {!! Form::close() !!}
 				<br><hr><br>
 					@yield('name')
+          @yield('contact')
 					@yield('designation')
 					@yield('joining_date')
 					@yield('promotion_date')
@@ -236,6 +276,7 @@
 		  @endisset
 		  @empty($request)
 			@yield('name')
+      @yield('contact')
 			@yield('designation')
 			@yield('joining_date')
 			@yield('promotion_date')

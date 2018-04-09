@@ -60,6 +60,7 @@ class registrationController extends Controller
             't_name' => 'required|string|max:255',
             't_designation' => 'required|string|max:255',
             't_email' => 'required|string|email|max:255|unique:teachers',
+            't_contact' => 'required|regex:/^[0][1][5-9][0-9][0-9](\d{6})$/|unique:teachers,t_contact',
             'password' => 'required|string|min:6|same:password',
             'password_confirmation' => 'required|string|min:6|same:password',
             'joingDate'=> 'required|date',
@@ -79,6 +80,7 @@ class registrationController extends Controller
 
 		$resTeacherCR=Teacher::create([
 		't_name'=>$data['t_name'],
+		't_contact'=>$data['t_contact'],
 		't_email'=>$data['t_email'],
 		't_image'=>$image,
 		't_designation'=>$data['t_designation'],
