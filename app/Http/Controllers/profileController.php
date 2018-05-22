@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Teacher;
 use App\Semester;
+use App\PUNotify;
 
 class profileController extends Controller
 {
@@ -38,5 +39,11 @@ class profileController extends Controller
       $teacher = Teacher::where('t_email',$email)->get();
       return view('teacher.profile',compact('teacher'));
     }
+  }
+
+  public function notification(Request $request)
+  {
+    PUNotify::where('id',$request->notified)->update(['status'=>0]);
+    return redirect(route('profile'));
   }
 }

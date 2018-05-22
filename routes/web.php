@@ -61,9 +61,11 @@ Route::group(['middleware' => ['auth']], function()
 {
 Route::get('/teacher/course/add','CourseRequestController@addform')->name('teacherAddcourseForm');
 Route::post('/teacher/course/add','CourseRequestController@add')->name('teacherAddcourse');
+Route::post('/teacher/course/delete','CourseRequestController@delete')->name('teacherDelcourse');
 
 Route::view('/teacher/semester/active','teacher.semester.active')->name('teacherActiveSemester');
 Route::get('/teacher','profileController@teacher')->name('teacher');
+Route::get('/notification','profileController@notification')->name('view_notification');
 });
 /**********************************[End User area ]****************************************/
 
@@ -105,6 +107,9 @@ Route::post('/distribution/approve/all','DistributionController@approveAll')->na
 Route::post('/distribution/indvidual','DistributionController@indvidual_approve')->name('indvidual_approve');
 Route::post('/distribution/indvidual/disapprove','DistributionController@indvidual_disapprove')->name('indvidual_disapprove');
 Route::get('/distribution/active','DistributionController@active')->name('active');
+Route::get('/distribution/details','DistributionDetailController@index')->name('details');
+Route::get('/distribution/details/pdf','DistributionDetailController@pdf_download')->name('pdf');
+
 /************************[end of Course Distribution]****************************/
 
 
@@ -112,9 +117,12 @@ Route::get('/distribution/active','DistributionController@active')->name('active
 Route::get('/allot/course','AllotmentController@Allot')->name('allotCourse');
 Route::post('/allot/course','AllotmentController@Allotment')->name('allotment');
 /************************[end of Course Allotment manually]****************************/
-
+/*****************************[Edit teacher profile ]***************************/
 Route::get('/teacher/all','teacherController@all')->name('teacherlist');
 Route::get('/teacher/individual','teacherController@individual')->name('teacherdetail');
+Route::post('teacher/profile/edit',['as'=>'editTeacherProfile','uses'=>'teacherController@showProfileEditForm']);
+Route::post('teacher/profile/update',['as'=>'updateTeacherProfile','uses'=>'teacherController@updateProfile']);
+
 });
 
 

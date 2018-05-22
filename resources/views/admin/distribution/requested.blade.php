@@ -19,7 +19,7 @@
                   <th>Designation</th>
                   <th>Joining Date</th>
                   <th>Promotion Date</th>
-                  <th>Approve</th>
+                  <!--<th>Approve</th>-->
               </tr>
           </thead>
 
@@ -35,7 +35,7 @@
                    <td>{{App\Teacher::where('t_id',$value->teacher_id)->pluck('t_designation')->first()}}</td>
                    <td>{{App\Teacher::where('t_id',$value->teacher_id)->pluck('joining_date')->first()}}</td>
                    <td>{{App\Teacher::where('t_id',$value->teacher_id)->pluck('promotion_date')->first()}}</td>
-                   <td>
+                   <!--<td>
                      @if($value->status==1)
                        <form action="{{route('indvidual_approve')}}" method="post" class="side-by-side">
                            {!! csrf_field() !!}
@@ -51,7 +51,7 @@
                         <input type="image" src="{{asset('images/2705.png')}}" alt="disapprove">
                     </form>
                     @endif
-                   </td>
+                  </td>-->
               </tr>
               @endforeach
 
@@ -61,7 +61,7 @@
       No course added yet!!
       @endif
       </div>
-      <div class="panel-footer">
+    <!--  <div class="panel-footer">
         <form action="{{route('approveall')}}" method="post" class="side-by-side">
             {!! csrf_field() !!}
             <input type="hidden" name="semester_id" value="{{$id}}">
@@ -69,7 +69,7 @@
             <input type="submit" class="btn btn-primary  btn-sm" value="Approve All">
         </form>
 
-      </div>
+      </div>-->
   </div>
 </div>
 @endif

@@ -13,6 +13,6 @@ class Teacher extends Model
 
   protected $fillable =[ 't_id', 't_name',
     't_email',   't_designation', 'joining_date',
-    'promotion_date','type','t_image', 'is_busy',
+    'promotion_date','type','t_image', 'is_busy','gender','t_contact',
   ];
 }

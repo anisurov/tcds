@@ -26,14 +26,23 @@ if ($designation=='Assistant Professor') {
     $can_take=12;
 }
 
-$theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+$theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+
+
+        $taken = DB::table('course')
+                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+
+
+                        foreach($taken as $value){
+                          $takenCredit = $value->takenCredit;
+                        }
 
 foreach($theroy_credit as $value){
   $theoryCredit = $value->credit;
 }
 
 $requestd = DB::table('course')
-          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
+          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.id as request_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
 $courseList = DB::table('course')
           ->select('course.course_id as course_id', 'course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs')
@@ -54,6 +63,7 @@ $courseList = DB::table('course')
                        <th>Credit</th>
                        <th>Contact Hour</th>
                        <th>Section</th>
+                       <th>Delete</th>
                    </tr>
                </thead>
 
@@ -65,6 +75,14 @@ $courseList = DB::table('course')
                         <td>{{$value->credit}}</td>
                         <td>{{$value->hrs}}</td>
                         <td>{{$value->section}}</td>
+                        <td>
+                            <form action="{{route('teacherDelcourse')}}" method="post" class="side-by-side">
+                                {!! csrf_field() !!}
+                                <input type="hidden" name="request_id" value="{{$value->request_id}}">
+
+                                <input type="submit" class="btn btn-primary  btn-sm" value="Delete">
+                            </form>
+                        </td>
                    </tr>
                     @php($totalCredit=$totalCredit+$value->credit)
                     @php($totalContactHour=$totalContactHour+$value->hrs)
@@ -85,9 +103,9 @@ $courseList = DB::table('course')
            No course requested yet!!
            @endif
            </div>
-          @if(($can_take-$totalCredit)>0)
+          @if(($can_take-$takenCredit)>0)
           <div class="panel-footer">
-            you need to take <b>{{$can_take-$totalCredit}}</b> more credit.
+            you need to take <b>{{$can_take-$takenCredit}}</b> more credit.
             @if((6-$theoryCredit)>0)
             Including {{6-$theoryCredit}} credit theory.
             @endif

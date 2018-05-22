@@ -62,5 +62,10 @@
                                       Allot Course
                                     </a>
                                  </li>
+                                 <li>
+                                    <a href="{{route('details')}}">
+                                      Distributed
+                                    </a>
+                                 </li>
                          </ul>
 </li>

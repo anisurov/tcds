@@ -38,6 +38,22 @@
                @endif
           </div>
 
+          <div class="form-group {{ $errors->has('gender') ? 'has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
+            <div class="input-group">
+            {!! Form::label('gender','Gender',['class'=>'input-group-addon']) !!}
+            <select name="gender" class="form-control custom-control" required>
+              <option value="">Select Gender</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+             </div>
+             @if ($errors->has('gender'))
+                          <span class="alert-danger">
+                               <strong>{{ $errors->first('gender') }}</strong>
+                          </span>
+                        @endif
+          </div>
+
           <div class="form-group {{ $errors->has('t_designation') ? 'has-error' : '' }}" style="margin-right:2px;margin-left:2px;">
             <div class="input-group">
             {!! Form::label('t_designation','Designation',['class'=>'input-group-addon']) !!}

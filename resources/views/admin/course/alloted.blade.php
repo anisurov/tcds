@@ -149,5 +149,42 @@ $semester_name=$semester_data->semesterName;
       </div>
   </div>
 </div>
+<div class="col-md-6">
+  <div class="panel panel-default inside-body-panel-shadow">
+    <div class="panel-heading"> Course's , not alloted yet</b> </div>
+      <div class="panel-body">
+        @php($not_alloted=DB::select('SELECT * FROM course WHERE course_id  IN (SELECT course_id FROM course_in_current_semester where semester_id='.$semester.' and status=1 and course_id NOT IN (SELECT course_id FROM course_alloted_to_teacher where semester_id='.$semester.' and status=1) ) '))
+        @if($not_alloted)
+        <table class="table">
+          <thead>
+              <tr>
+                  <th>Course ID</th>
+                  <th>Name</th>
+                  <th>Credit</th>
+                  <th>Contact Hour</th>
+                  <!-- <th>Section</th>
+                  <th>Teacher</th> -->
+              </tr>
+          </thead>
+
+          <tbody>
+              @foreach($not_alloted as $value)
+              <tr>
+                  <td>{{$value->courseIdentity}}</td>
+                  <td>{{$value->courseName}}</td>
+                   <td>{{$value->courseCredit}}</td>
+                   <td>{{$value->contactHrs}}</td>
+
+              </tr>
+              @endforeach
+
+          </tbody>
+      </table>
+      @else
+      No course added yet!!
+      @endif
+      </div>
+  </div>
+</div>
 @endif
 @endsection

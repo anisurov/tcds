@@ -65,6 +65,7 @@ class registrationController extends Controller
             'password_confirmation' => 'required|string|min:6|same:password',
             'joingDate'=> 'required|date',
             'image'=>'nullable|mimes:jpeg,bmp,png',
+            'gender' =>  array('required','regex:/Female|Male$/'),
         ])->validate();
     }
 
@@ -82,10 +83,11 @@ class registrationController extends Controller
 		't_name'=>$data['t_name'],
 		't_contact'=>$data['t_contact'],
 		't_email'=>$data['t_email'],
+		'gender'=>$data['gender'],
 		't_image'=>$image,
 		't_designation'=>$data['t_designation'],
     'joining_date'=>date("Y-m-d", strtotime($data['joingDate'])),
-    'is_busy' =>0,
+    'is_busy' =>"no",
     ]);
 
     $resUserCR=User::create([

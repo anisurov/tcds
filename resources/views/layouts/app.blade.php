@@ -47,13 +47,25 @@
                                                        Notification
                                                    </a>
                                                    <ul class="dropdown-menu">
-                                                     @php($notifications=App\Notify::select('semester.semesterName as semesterName','semester.semester_id as semester_id','notify.end_date as end_date')->where('end_date','>',date("Y-m-d"))->join('semester','semester.semester_id','=','notify.semester_id')->where('semesterStatus','!=','13')->where('semesterStatus','!=','0')->get())
-                                                     @if($notifications->count()>0)
+                                                     <!-- @php($notifications=App\Notify::select('semester.semesterName as semesterName','semester.semester_id as semester_id','notify.end_date as end_date')->where('end_date','>',date("Y-m-d"))->join('semester','semester.semester_id','=','notify.semester_id')->where('semesterStatus','!=','13')->where('semesterStatus','!=','0')->get()) -->
+                                                     @php($update=App\PUNotify::where('t_id',App\Teacher::where('t_email',Auth::user()->email)->pluck('t_id')->first())->where('status','1')->get())
+                                                     @php($notifications=App\Notify::where('end_date','>',date("Y-m-d"))->where('status','1')->get())
+                                                     @if($notifications->count()+$update->count()>0)
                                                     @foreach($notifications as $notification)
                                                        <li>
-                                                          <a href="{{route('teacherAddcourseForm')}}/?semester_id={{$notification->semester_id}}">
-                                                            please add course to <b>{{$notification->semesterName}}</b> within {{$notification->end_date}}
-                                                          </a>
+                                                          <!-- <a href="{{route('teacherAddcourseForm')}}/?semester_id={{$notification->semester_id}}">
+                                                            please add course
+                                                            to <b>{{$notification->semesterName}}</b>
+                                                             within {{$notification->end_date}}
+                                                          </a> -->
+                                                          please add course choice
+                                                           within {{$notification->end_date}}
+                                                       </li>
+                                                    @endforeach
+                                                    @foreach($update as $data)
+                                                       <li>
+                                                         <a href="{{route('view_notification')}}/?notified={{$data->id}}">   {{$data->message}}
+                                                         </a>
                                                        </li>
                                                     @endforeach
                                                     @else

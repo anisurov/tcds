@@ -38,14 +38,13 @@ er-box; background-color: #f5f8fa; color: #74787E; height: 100%; hyphens: a=
                         <p style="font-family: Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #374550;">
                             Respected,Sir</p>
                         <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left; color: #222222;">
-                            Please provide a choice list of , courses you want to take classes on <br>
-                            <b>{{$title}}</b> semester
+                          Your profile has been updated.
                     </td>
                 </tr>
                 <tr>
                     <td style="background-color: #ffffff; padding: 12px 24px 12px 24px;" align="left">
                         <p style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left; color: #222222;">
-                            Deadline of course choice is {{$content}}
+                            please visit your to check those changes.
                     </td>
                 </tr>
                 <tr>

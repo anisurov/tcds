@@ -8,7 +8,7 @@
             	<form  method="POST" action="{{route('notify')}}">
                         {{ csrf_field() }}
 
-                        <div class="form-group col-md-12 ">
+                        <!-- <div class="form-group col-md-12 ">
                             <div class="input-group {{ $errors->has('semester') ? ' has-error' : '' }}">
                             	  <div class="input-group-addon">
 											 Semester*
@@ -25,7 +25,7 @@
                                         <strong>{{ $errors->first('semester') }}</strong>
                                     </span>
                                 @endif
-                        </div>
+                        </div> -->
 
 
                         <div class="form-group col-md-12 ">

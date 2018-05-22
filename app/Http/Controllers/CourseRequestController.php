@@ -37,12 +37,13 @@ class CourseRequestController extends Controller
       $teacher_id = $request->teacher_id;
       $course_id = $request->course_name;
       $section = $request->section;
-      if(Notify::where('semester_id',$semester_id)->where('status',1)->count()<=0)
-        return redirect(route('profile'))->withFailed('sorry!!Internal error Occured');
+      // if(Notify::where('semester_id',$semester_id)->where('status',1)->count()<=0)
+      if(Notify::where('status',1)->count()<=0)
+        return redirect(route('profile'))->withFailed('sorry!!You can not request course right now.For further query contact Authority');
 
         $requestd = DB::table('course')
-                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $semester_id)->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
-      $theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $semester_id)->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
+                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
+      $theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $teacher_id)->whereIn('status',[1,7])->get();
 
 
       $teacher_data= Teacher::where('t_id',$teacher_id)->get();
@@ -59,17 +60,17 @@ class CourseRequestController extends Controller
         }else {
           $must_take_credit=15;
         }
-        $quotaCredit=21;
+//        $quotaCredit=21;
       }
       else if($designation=='Associate Professor'){
         $priority=2;
         $must_take_credit=12;
-        $quotaCredit=18;
+  //      $quotaCredit=18;
       }
       else if($designation=='Lecturer'){
         $priority=1;
         $must_take_credit=12;
-        $quotaCredit=18;
+    //    $quotaCredit=18;
       }
       foreach($theroy_credit as $value){
         $theoryCredit = $value->credit;
@@ -78,9 +79,12 @@ class CourseRequestController extends Controller
       foreach($requestd as $value){
         $takenCredit = $value->takenCredit;
       }
+       /*Course taken limitation---[removed]*/
+       /*
       if($takenCredit>=$quotaCredit){
         return redirect(route('profile'))->withFailed('sorry!!Your qouta limit already reached . you have taken '.$takenCredit.' Credit');
       }
+      */
 
       $course_requests=CourseRequest::where(['course_id'=>$course_id,'section'=>$section,'semester_id'=>$semester_id])->whereIn('status',[1,7])->get();
     //  var_dump($course_requests);
@@ -169,21 +173,32 @@ class CourseRequestController extends Controller
     }
     $takenCredit= $takenCredit+Course::where('course_id',$course_id)->pluck('courseCredit')->first();
     if($store_course_request->save()){
-      if(($must_take_credit-$takenCredit)>0){
-        if((6-$theoryCredit)>0){
-          $extraMsg='Including '.(6-$theoryCredit).' credit theory';
-        }else {
-          $extraMsg='';
-        }
-      return redirect(route('profile'))->withSuccess('Course request Successful.You need to take '.($must_take_credit-$takenCredit).' more credit.'.$extraMsg);
-    }
-      else {
-        return redirect(route('profile'))->withSuccess('Course request Successful.You can  take 6 extra credit');
-      }
+    //   if(($must_take_credit-$takenCredit)>0){
+    //     if((6-$theoryCredit)>0){
+    //       $extraMsg='Including '.(6-$theoryCredit).' credit theory';
+    //     }else {
+    //       $extraMsg='';
+    //     }
+    //   return redirect(route('profile'))->withSuccess('Course request Successful.You need to take '.($must_take_credit-$takenCredit).' more credit.'.$extraMsg);
+    // }
+    //   else {
+    //     return redirect(route('profile'))->withSuccess('Course request Successful.You can  take 6 extra credit');
+    //   }
+
+    return redirect(route('profile'))->withSuccess('Course request Successful');
     }else {
       return redirect(route('profile'))->withFailed('Course request Failed!!');
     }
 
+    }
+
+    public function delete(Request $request)
+    {
+      if(CourseRequest::where('id',$request->request_id)->update(['status'=>0])){
+      return redirect(route('teacherAddcourse'))->withSuccess('course deleted from request  Successfully');
+      }else {
+        return redirect(route('teacherAddcourse'))->withFailed('deletion  Failed!!');
+      }
     }
 
     protected function validator(array $data)
