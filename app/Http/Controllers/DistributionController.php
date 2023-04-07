@@ -263,7 +263,7 @@ class DistributionController extends Controller
     public function indvidual_disapprove(Request $request)
     {
       $request_id = $request->request_id;
-      $course_requests=CourseRequest::where(['id'=>$request_id,'status'=> 7])->get();
+      $course_requests=CourseToTeacher::where(['calt_id'=>$request_id,'status'=> 1])->get();
           if ($course_requests && $course_requests->count()>0) {
 
 
@@ -272,15 +272,15 @@ class DistributionController extends Controller
 
               $semester_id=$course->semester_id;
               $course_id=$course->course_id;
-              $t_id=$course->teacher_id;
+              $t_id=$course->t_id;
               $section=$course->section;
 
             }
-            if (CourseToTeacher::where(['semester_id'=>$semester_id,'course_id'=>$course_id,'t_id'=>$t_id,'section'=>$section])->update(['status'=>0])) {
-              if(CourseRequest::where('id', $request_id)->update(['status'=>1]))
-                return redirect(route('profile'))->withSuccess('Request disapproved successfully');
+            if (CourseRequest::where(['semester_id'=>$semester_id,'course_id'=>$course_id,'teacher_id'=>$t_id,'section'=>$section])->update(['status'=>0])) {
+              if(CourseToTeacher::where('calt_id', $request_id)->update(['status'=>0]))
+                return redirect(route('profile'))->withSuccess('Allotment revoked successfully');
               else {
-                return redirect(route('profile'))->withFailed('Request disapprove Failed');
+                return redirect(route('profile'))->withFailed('Allotment revoked Failed');
               }
             }
       }

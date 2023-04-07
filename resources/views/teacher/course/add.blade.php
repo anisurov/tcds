@@ -16,9 +16,9 @@ foreach ($teacher_infos as $value) {
 }
 if ($designation=='Assistant Professor') {
     if ($busy == 'yes') {
-      $can_take=9;
-    }else {
-      $can_take=15;
+        $can_take=9;
+    } else {
+        $can_take=15;
     }
 } elseif ($designation=='Associate Professor') {
     $can_take=12;
@@ -26,23 +26,23 @@ if ($designation=='Assistant Professor') {
     $can_take=12;
 }
 
-$theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType','core')->where('course.category','theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+$theroy_credit = DB::table('course')->select(DB::raw('sum(course.courseCredit)  as credit'))->where('course.courseType', 'core')->where('course.category', 'theory')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
 
         $taken = DB::table('course')
-                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status',[1,7])->get();
+                  ->select(DB::raw('sum(course.courseCredit) as takenCredit'))->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
 
-                        foreach($taken as $value){
-                          $takenCredit = $value->takenCredit;
+                        foreach ($taken as $value) {
+                            $takenCredit = $value->takenCredit;
                         }
 
-foreach($theroy_credit as $value){
-  $theoryCredit = $value->credit;
+foreach ($theroy_credit as $value) {
+    $theoryCredit = $value->credit;
 }
 
 $requestd = DB::table('course')
-          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section','course_request.id as request_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
+          ->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_request.section as section', 'course_request.id as request_id')->join('course_request', 'course.course_id', '=', 'course_request.course_id')->where('course_request.semester_id', $id)->where('course_request.teacher_id', $t_id)->whereIn('status', [1,7])->get();
 
 $courseList = DB::table('course')
           ->select('course.course_id as course_id', 'course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs')
@@ -193,4 +193,83 @@ $courseList = DB::table('course')
           	</div>
       </div>
     </div>
+
+<?php
+$requestd_course=DB::table('course')->select('course.courseName as courseName', 'course.courseIdentity as id', 'course.courseCredit as credit', 'course.contactHrs as hrs', 'course_alloted_to_teacher.section as section','course_alloted_to_teacher.t_id as teacher_id')->join('course_alloted_to_teacher', 'course.course_id', '=', 'course_alloted_to_teacher.course_id')->where('course_alloted_to_teacher.semester_id', $id)->where('course_alloted_to_teacher.status',1)->get();
+ ?>
+    <div class="col-md-6">
+      <div class="panel panel-default inside-body-panel-shadow">
+        <div class="panel-heading"> Course alloted to <b>{{$semesterName}}</b> </div>
+          <div class="panel-body">
+            @if($requestd_course->count()>0)
+            <table class="table">
+              <thead>
+                  <tr>
+                      <th>Course ID</th>
+                      <th>Name</th>
+                      <th>Credit</th>
+                      <th>Contact Hour</th>
+                      <th>Section</th>
+                      <th>Teacher</th>
+                  </tr>
+              </thead>
+
+              <tbody>
+                  @foreach($requestd_course as $value)
+                  <tr>
+                      <td>{{$value->id}}</td>
+                      <td>{{$value->courseName}}</td>
+                       <td>{{$value->credit}}</td>
+                       <td>{{$value->hrs}}</td>
+                       <td>{{$value->section}}</td>
+                       <td>{{App\Teacher::where('t_id',$value->teacher_id)->pluck('t_name')->first()}}</td>
+                  </tr>
+                  @endforeach
+
+              </tbody>
+          </table>
+          @else
+          No course added yet!!
+          @endif
+          </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default inside-body-panel-shadow">
+        <div class="panel-heading"> Course's , not alloted yet</b> </div>
+          <div class="panel-body">
+            @php($not_alloted=DB::select('SELECT * FROM course WHERE course_id  IN (SELECT course_id FROM course_in_current_semester where semester_id='.$id.' and status=1 and course_id NOT IN (SELECT course_id FROM course_alloted_to_teacher where semester_id='.$id.' and status=1) ) '))
+            @if($not_alloted)
+            <table class="table">
+              <thead>
+                  <tr>
+                      <th>Course ID</th>
+                      <th>Name</th>
+                      <th>Credit</th>
+                      <th>Contact Hour</th>
+                      <!-- <th>Section</th>
+                      <th>Teacher</th> -->
+                  </tr>
+              </thead>
+
+              <tbody>
+                  @foreach($not_alloted as $value)
+                  <tr>
+                      <td>{{$value->courseIdentity}}</td>
+                      <td>{{$value->courseName}}</td>
+                       <td>{{$value->courseCredit}}</td>
+                       <td>{{$value->contactHrs}}</td>
+
+                  </tr>
+                  @endforeach
+
+              </tbody>
+          </table>
+          @else
+          No course added yet!!
+          @endif
+          </div>
+      </div>
+    </div>
+
 @endsection

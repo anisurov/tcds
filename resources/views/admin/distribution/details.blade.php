@@ -6,7 +6,7 @@
    foreach(App\Teacher::select('t_id')->get() as $teacher){
      $t_id=$teacher->t_id;
      $alloted_course = DB::table('course')
-               ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.semester as term','course.contactHrs as hrs','course_alloted_to_teacher.section as section')->join('course_alloted_to_teacher', 'course_alloted_to_teacher.course_id', 'course.course_id')->where('course_alloted_to_teacher.t_id',$t_id)->where('course_alloted_to_teacher.status',1)->get();
+               ->select('course.courseName as courseName','course.courseIdentity as id','course.courseCredit as credit','course.semester as term','course.contactHrs as hrs','course_alloted_to_teacher.section as section','course_alloted_to_teacher.calt_id as calt_id')->join('course_alloted_to_teacher', 'course_alloted_to_teacher.course_id', 'course.course_id')->where('course_alloted_to_teacher.t_id',$t_id)->where('course_alloted_to_teacher.status',1)->get();
 
                // echo $t_id."::".count($alloted_course)."  ";
 ?>
@@ -38,6 +38,7 @@
                       <th>Credit</th>
                       <th>Contact Hour</th>
                       <th>Section</th>
+                      <th>Delete</th>
                     </tr>
                 </thead>
                 <?php
@@ -51,6 +52,14 @@
                        <td>{{$value->credit}}</td>
                        <td>{{$value->hrs}}</td>
                        <td>{{$value->section}}</td>
+                       <td>
+                           <form action="{{route('indvidual_disapprove')}}" method="post" class="side-by-side">
+                               {!! csrf_field() !!}
+                               <input type="hidden" name="request_id" value="{{$value->calt_id}}">
+
+                               <input type="submit" class="btn btn-primary  btn-sm" value="Delete">
+                           </form>
+                       </td>
                   </tr>
                 </tbody>
                 <?php } ?>
